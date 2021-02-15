@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -15,6 +16,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.Random;
+
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
     Canvas canvas = new Canvas(
@@ -22,6 +25,8 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label tileLabel = new Label();
+    Random RANDOM = new Random();
 
     public static void main(String[] args) {
         launch(args);
@@ -35,6 +40,8 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+        ui.add(new Label("Tile: "),0,1);
+        ui.add(tileLabel, 1,1);
 
         BorderPane borderPane = new BorderPane();
 
@@ -50,25 +57,39 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private void onKeyPressed(KeyEvent keyEvent) {
-        switch (keyEvent.getCode()) {
-            case UP:
-                map.getPlayer().move(0, -1);
-                refresh();
-                break;
-            case DOWN:
-                map.getPlayer().move(0, 1);
-                refresh();
-                break;
-            case LEFT:
-                map.getPlayer().move(-1, 0);
-                refresh();
-                break;
-            case RIGHT:
-                map.getPlayer().move(1,0);
-                refresh();
-                break;
+    private int randomNumber(int upperBound) {
+        return RANDOM.nextInt(upperBound);
+    };
+
+    private void moveEnemies() {
+        for (Actor enemy : map.getActors()) {
+            enemy.move(randomNumber(3) - 1, randomNumber(3) - 1);
         }
+    };
+
+    private void onKeyPressed(KeyEvent keyEvent) {
+            switch (keyEvent.getCode()) {
+                case UP:
+                    map.getPlayer().move(0, -1);
+                    moveEnemies();
+                    refresh();
+                    break;
+                case DOWN:
+                    map.getPlayer().move(0, 1);
+                    moveEnemies();
+                    refresh();
+                    break;
+                case LEFT:
+                    map.getPlayer().move(-1, 0);
+                    moveEnemies();
+                    refresh();
+                    break;
+                case RIGHT:
+                    map.getPlayer().move(1, 0);
+                    moveEnemies();
+                    refresh();
+                    break;
+            }
     }
 
     private void refresh() {
