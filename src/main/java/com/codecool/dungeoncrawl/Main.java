@@ -81,6 +81,7 @@ public class Main extends Application {
         Actor enemyAtTarget = checkEnemy(targetCell);
         if (enemyAtTarget != null) {
             enemyAtTarget.damage(5);
+            enemyAtTarget.update();
         } else { map.getPlayer().move(dx, dy); }
     }
 
