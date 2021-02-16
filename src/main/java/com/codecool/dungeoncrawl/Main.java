@@ -108,7 +108,7 @@ public class Main extends Application {
     private void attack(Actor enemyAtTarget) {
         enemyAtTarget.damage(5);
         enemyAtTarget.update();
-        if (enemyAtTarget.isAlive()) map.getPlayer().damage(10);
+        if (enemyAtTarget.isAlive()) map.getPlayer().damage(2);
         map.getPlayer().update();
     }
 
