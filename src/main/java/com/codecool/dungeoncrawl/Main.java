@@ -135,26 +135,40 @@ public class Main extends Application {
         map.getPlayer().update();
     }
 
+    private void enemyAttackOrMove() {
+        for (Actor enemy : map.getActors()) {
+            if (enemy.getCell().getNeighbor(0, -1).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
+            { map.getPlayer().damage(5); }
+            else if (enemy.getCell().getNeighbor(0, 1).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
+            { map.getPlayer().damage(5); }
+            else if (enemy.getCell().getNeighbor(1, 0).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
+            { map.getPlayer().damage(5); }
+            else if (enemy.getCell().getNeighbor(-1, 0).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
+            { map.getPlayer().damage(5); }
+            else if (enemy.isAlive()) { moveEnemies(); }
+        }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
             switch (keyEvent.getCode()) {
                 case UP:
                     attackOrMove(0, -1);
-                    moveEnemies();
+                    enemyAttackOrMove();
                     refresh();
                     break;
                 case DOWN:
                     attackOrMove(0, 1);
-                    moveEnemies();
+                    enemyAttackOrMove();
                     refresh();
                     break;
                 case LEFT:
                     attackOrMove(-1, 0);
-                    moveEnemies();
+                    enemyAttackOrMove();
                     refresh();
                     break;
                 case RIGHT:
                     attackOrMove(1, 0);
-                    moveEnemies();
+                    enemyAttackOrMove();
                     refresh();
                     break;
             }
