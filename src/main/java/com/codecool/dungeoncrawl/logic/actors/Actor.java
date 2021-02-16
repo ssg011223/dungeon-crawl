@@ -22,6 +22,8 @@ public abstract class Actor implements Drawable {
         }
     }
 
+    public void damage(int amount) { this.health -= amount; }
+
     public int getHealth() {
         return health;
     }
