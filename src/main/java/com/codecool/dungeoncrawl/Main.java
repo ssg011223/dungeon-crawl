@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -105,12 +106,6 @@ public class Main extends Application {
         return RANDOM.nextInt(upperBound);
     };
 
-    private void moveEnemies() {
-        for (Actor enemy : map.getActors()) {
-            enemy.move(randomNumber(3) - 1, randomNumber(3) - 1);
-        }
-    }
-
     private Actor checkEnemy(Cell targetCell) {
         for (Actor enemy : map.getActors()) {
             if (enemy.getCell() == targetCell) {
@@ -129,24 +124,33 @@ public class Main extends Application {
     }
 
     private void attack(Actor enemyAtTarget) {
-        enemyAtTarget.damage(5);
+        enemyAtTarget.damage(50);
         enemyAtTarget.update();
         if (enemyAtTarget.isAlive()) map.getPlayer().damage(2);
         map.getPlayer().update();
     }
 
+    private boolean isPlayerNear(Actor enemy) {
+        for (int rows = -1; rows < 2; rows++) {
+            for (int columns = -1; columns < 2; columns++) {
+                if (enemy.getCell().getNeighbor(rows, columns).getActor() != null) {
+                    if (enemy.getCell().getNeighbor(rows, columns).getActor().equals(map.getPlayer())) {
+                        return true;
+                        }
+                    }
+                }
+            }
+        return false;
+    }
+
     private void enemyAttackOrMove() {
         for (Actor enemy : map.getActors()) {
-            if (enemy.getCell().getNeighbor(0, -1).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
-            { map.getPlayer().damage(5); }
-            else if (enemy.getCell().getNeighbor(0, 1).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
-            { map.getPlayer().damage(5); }
-            else if (enemy.getCell().getNeighbor(1, 0).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
-            { map.getPlayer().damage(5); }
-            else if (enemy.getCell().getNeighbor(-1, 0).getActor().getClass().getSimpleName().equals("Player") && enemy.isAlive())
-            { map.getPlayer().damage(5); }
-            else if (enemy.isAlive()) { moveEnemies(); }
+            if (isPlayerNear(enemy) && enemy.isAlive()) {
+                map.getPlayer().damage(1);
+            } else if (enemy.isAlive())
+                enemy.move(randomNumber(3) - 1, randomNumber(3) - 1);
         }
+        map.getPlayer().update();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
