@@ -7,15 +7,17 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health = 10;
+    private boolean isAlive;
 
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
+        this.isAlive = true;
     }
 
     public void move(int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
-        if (nextCell.getType().equals(CellType.FLOOR)) {
+        if (nextCell.getType().equals(CellType.FLOOR) && isAlive) {
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
@@ -39,4 +41,10 @@ public abstract class Actor implements Drawable {
     public int getY() {
         return cell.getY();
     }
+
+    public void update() {
+        if (this.health < 1) {
+            this.isAlive = false;
+        }
+    };
 }
