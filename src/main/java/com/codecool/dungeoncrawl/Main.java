@@ -67,6 +67,15 @@ public class Main extends Application {
         }
     };
 
+    private Actor checkEnemy(Cell targetCell) {
+        for (Actor enemy : map.getActors()) {
+            if (enemy.getCell() == targetCell) {
+                return enemy;
+            }
+        }
+        return null;
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
             switch (keyEvent.getCode()) {
                 case UP:
