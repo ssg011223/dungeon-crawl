@@ -30,6 +30,7 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label inventoryLabel = new Label();
     Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
@@ -64,8 +65,8 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Tile: "),0,1);
-        ui.add(tileLabel, 1,1);
+        ui.add(new Label("Inventory: "), 0, 1);
+        ui.add(inventoryLabel, 1, 1);
 
         BorderPane borderPane = new BorderPane();
 
@@ -167,12 +168,21 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
+                } else if (cell.getItem() != null) {
+                    Tiles.drawTile(context, cell.getItem(), x, y);
                 } else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        StringBuilder inventoryPrint = new StringBuilder();
+        for (int i = 0; i < map.getPlayer().getInventory().size(); i++) {
+            if (i > 0) {
+                inventoryPrint.append(", ").append(map.getPlayer().getInventory().get(i).getClass().getSimpleName());
+            } else inventoryPrint.append(map.getPlayer().getInventory().get(i).getClass().getSimpleName());
+        }
+        inventoryLabel.setText(inventoryPrint.toString());
         if (!map.getPlayer().isAlive()) {
             modalWindow(gameStage, GameOver, "");
         }
