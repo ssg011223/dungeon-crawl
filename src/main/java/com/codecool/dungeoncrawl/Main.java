@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -32,6 +33,7 @@ public class Main extends Application {
     Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
+    String GameOver = "GAME OVER";
 
     public static void main(String[] args) {
         launch(args);
@@ -68,12 +70,30 @@ public class Main extends Application {
         dialog.setTitle(modalTitle);
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(primaryStage);
-        Button exitButton = new Button("Exit");
+        Button exitButton = new Button("EXIT");
         exitButton.setOnAction(event -> System.exit(0));
+        exitButton.setStyle("-fx-background-color: \n" +
+                "        #090a0c,\n" +
+                "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n" +
+                "        linear-gradient(#20262b, #191d22),\n" +
+                "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
+                "    -fx-background-radius: 5,4,3,5;\n" +
+                "    -fx-background-insets: 0,1,2,0;\n" +
+                "    -fx-text-fill: white;\n" +
+                "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
+                "    -fx-font-family: \"Arial\";\n" +
+                "    -fx-text-fill: linear-gradient(white, #d0d0d0);\n" +
+                "    -fx-font-size: 18px;\n" +
+                "    -fx-padding: 10 20 10 20;");
         VBox dialogVbox = new VBox(20);
         dialogVbox.getChildren().add(new Text(modalText));
         dialogVbox.getChildren().add(exitButton);
-        Scene dialogScene = new Scene(dialogVbox, 255, 250);
+        dialogVbox.setAlignment(Pos.CENTER);
+        dialogVbox.setStyle("" +
+                "    -fx-background-color:\n" +
+                "        linear-gradient(#6a040f, #370617),\n" +
+                "        radial-gradient(center 50% -40%, radius 200%, #d00000 45%, #9d0208 50%);\n");
+        Scene dialogScene = new Scene(dialogVbox, 150, 100);
         dialog.setScene(dialogScene);
         dialog.show();
     }
@@ -152,7 +172,7 @@ public class Main extends Application {
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
         if (!map.getPlayer().isAlive()) {
-            modalWindow(gameStage,"Game Over", "GAME OVER!");
+            modalWindow(gameStage, GameOver, "");
         }
     }
 }
