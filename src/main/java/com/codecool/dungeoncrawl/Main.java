@@ -9,11 +9,15 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Random;
@@ -27,6 +31,7 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label tileLabel = new Label();
     Random RANDOM = new Random();
+    Stage gameStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -55,6 +60,22 @@ public class Main extends Application {
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+        gameStage = primaryStage;
+    }
+
+    private void modalWindow(Stage primaryStage, String modalTitle, String modalText) {
+        final Stage dialog = new Stage();
+        dialog.setTitle(modalTitle);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(event -> System.exit(0));
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.getChildren().add(new Text(modalText));
+        dialogVbox.getChildren().add(exitButton);
+        Scene dialogScene = new Scene(dialogVbox, 255, 250);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
 
     private int randomNumber(int upperBound) {
@@ -87,7 +108,7 @@ public class Main extends Application {
     private void attack(Actor enemyAtTarget) {
         enemyAtTarget.damage(5);
         enemyAtTarget.update();
-        if (enemyAtTarget.isAlive()) map.getPlayer().damage(2);
+        if (enemyAtTarget.isAlive()) map.getPlayer().damage(10);
         map.getPlayer().update();
     }
 
@@ -130,5 +151,8 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        if (!map.getPlayer().isAlive()) {
+            modalWindow(gameStage,"Game Over", "GAME OVER!");
+        }
     }
 }
