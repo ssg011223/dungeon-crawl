@@ -15,6 +15,14 @@ public abstract class Actor implements Drawable {
         this.isAlive = true;
     }
 
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     public void move(int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
         if (nextCell.getType().equals(CellType.FLOOR) && isAlive) {
