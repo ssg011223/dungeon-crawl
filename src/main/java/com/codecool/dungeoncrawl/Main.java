@@ -76,25 +76,33 @@ public class Main extends Application {
         return null;
     }
 
+    private void attackOrMove(int dx, int dy) {
+        Cell targetCell = map.getPlayer().getCell().getNeighbor(dx, dy);
+        Actor enemyAtTarget = checkEnemy(targetCell);
+        if (enemyAtTarget != null) {
+            enemyAtTarget.damage(5);
+        } else { map.getPlayer().move(dx, dy); }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
             switch (keyEvent.getCode()) {
                 case UP:
-                    map.getPlayer().move(0, -1);
+                    attackOrMove(0, -1);
                     moveEnemies();
                     refresh();
                     break;
                 case DOWN:
-                    map.getPlayer().move(0, 1);
+                    attackOrMove(0, 1);
                     moveEnemies();
                     refresh();
                     break;
                 case LEFT:
-                    map.getPlayer().move(-1, 0);
+                    attackOrMove(-1, 0);
                     moveEnemies();
                     refresh();
                     break;
                 case RIGHT:
-                    map.getPlayer().move(1, 0);
+                    attackOrMove(1, 0);
                     moveEnemies();
                     refresh();
                     break;
