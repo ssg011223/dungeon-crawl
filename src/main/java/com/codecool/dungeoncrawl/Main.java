@@ -65,7 +65,7 @@ public class Main extends Application {
         for (Actor enemy : map.getActors()) {
             enemy.move(randomNumber(3) - 1, randomNumber(3) - 1);
         }
-    };
+    }
 
     private Actor checkEnemy(Cell targetCell) {
         for (Actor enemy : map.getActors()) {
@@ -80,9 +80,15 @@ public class Main extends Application {
         Cell targetCell = map.getPlayer().getCell().getNeighbor(dx, dy);
         Actor enemyAtTarget = checkEnemy(targetCell);
         if (enemyAtTarget != null) {
-            enemyAtTarget.damage(5);
-            enemyAtTarget.update();
+            attack(enemyAtTarget);
         } else { map.getPlayer().move(dx, dy); }
+    }
+
+    private void attack(Actor enemyAtTarget) {
+        enemyAtTarget.damage(5);
+        enemyAtTarget.update();
+        if (enemyAtTarget.isAlive()) map.getPlayer().damage(2);
+        map.getPlayer().update();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
