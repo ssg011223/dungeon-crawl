@@ -59,6 +59,30 @@ public class MapLoader {
                         case 'S':
                             cell.setType(CellType.STAIRS);
                             break;
+                        case '/':
+                            cell.setType(CellType.PIPESTART);
+                            break;
+                        case '-':
+                            cell.setType(CellType.PIPE);
+                            break;
+                        case 'W':
+                            cell.setType(CellType.BOTTOMFLOOR);
+                            break;
+                        case '_':
+                            cell.setType(CellType.TILEDFLOOR);
+                            break;
+                        case '*':
+                            cell.setType(CellType.FILL);
+                            break;
+                        case ':':
+                            cell.setType(CellType.ROCK);
+                            break;
+                        case 'X':
+                            cell.setType(CellType.WALLRUIN);
+                            break;
+                        case ',':
+                            cell.setType(CellType.DEBRIS);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
