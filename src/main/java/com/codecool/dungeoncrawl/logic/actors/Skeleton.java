@@ -9,6 +9,8 @@ public class Skeleton extends Actor {
 
     @Override
     public String getTileName() {
-        return "skeleton";
-    }
+        if (isAlive()) return "skeleton";
+        return "bones";
+        }
 }
+
