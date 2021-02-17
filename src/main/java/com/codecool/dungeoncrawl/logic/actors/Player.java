@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 import java.util.ArrayList;
@@ -23,4 +24,11 @@ public class Player extends Actor {
     public void addToInventory(Item item) { this.inventory.add(item); }
 
     public void removeFromInventory(Item item) { this.inventory.remove(item); }
+
+    public void teleport (GameMap map, int x, int y) {
+        this.getCell().setActor(null);
+        map.setPlayer(this);
+        map.getCell(x, y).setActor(this);
+        this.setCell(map.getCell(x, y));
+    }
 }

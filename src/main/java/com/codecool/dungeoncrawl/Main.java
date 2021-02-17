@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
@@ -27,7 +28,8 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    GameMap[] maps = new GameMap[] {MapLoader.loadMap("map.txt"), MapLoader.loadMap("map2.txt")};
+    GameMap map = maps[0];
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -128,6 +130,15 @@ public class Main extends Application {
             player.move(dx, dy);
             if (neighbouringCell.getActor() instanceof Door) ((Door) neighbouringCell.getActor()).open(player);
             if (player.getCell().getItem() != null) player.getCell().getItem().pickUp(player);
+            if (player.getCell().getType().equals(CellType.STAIRS)) {
+                if (this.map == maps[0]) {
+                    this.map = maps[1];
+                    player.teleport(this.map, 1, 2); //Coordinates should be next to the stairs
+                } else {
+                    this.map = maps[0];
+                    player.teleport(this.map, 23, 17); //Coordinates should be next to the stairs
+                }
+            }
         }
     }
 
@@ -152,6 +163,7 @@ public class Main extends Application {
     }
 
     private void enemyAttackOrMove() {
+        if (map.getActors() == null) return;
         for (Actor enemy : map.getActors()) {
             if (isPlayerNear(enemy) && enemy.isAlive()) {
                 map.getPlayer().damage(enemy.getAttack());                      // this is how much the enemy damage the player when they attack
