@@ -23,7 +23,7 @@ public abstract class Item implements Drawable {
         return 0;
     }
 
-    public boolean isHasAttackModifier() {
+    public boolean hasAttackModifier() {
         return hasAttackModifier;
     }
 
