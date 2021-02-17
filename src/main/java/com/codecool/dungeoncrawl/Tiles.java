@@ -23,7 +23,7 @@ public class Tiles {
     }
 
     static {
-        tileMap.put("empty", new Tile(0, 0));
+        tileMap.put("empty", new Tile(5, 0));
         tileMap.put("wall", new Tile(10, 17));
         tileMap.put("floor", new Tile(2, 0));
         tileMap.put("player", new Tile(27, 0));
@@ -33,6 +33,14 @@ public class Tiles {
         tileMap.put("orc", new Tile(26,2));
         tileMap.put("door", new Tile(10, 9));
         tileMap.put("stairs", new Tile(1, 11));
+        tileMap.put("pipe-start", new Tile(8, 12));
+        tileMap.put("pipe", new Tile(9, 12));
+        tileMap.put("bottom-floor", new Tile(17, 13));
+        tileMap.put("tiled-floor", new Tile(16,0));
+        tileMap.put("fill", new Tile(6,0));
+        tileMap.put("rock", new Tile(5, 2));
+        tileMap.put("wall-ruin", new Tile(2, 11));
+        tileMap.put("debris", new Tile(1, 0));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
