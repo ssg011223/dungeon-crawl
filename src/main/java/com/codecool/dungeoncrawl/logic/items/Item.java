@@ -6,6 +6,8 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 
 public abstract class Item implements Drawable {
     private Cell cell;
+    private boolean consumable = false;
+    private boolean hasAttackModifier = false;
 
     public Item(Cell cell) {
         this.cell = cell;
@@ -15,5 +17,25 @@ public abstract class Item implements Drawable {
     public void pickUp(Player player) {
         this.cell.setItem(null);
         player.addToInventory(this);
+    }
+
+    public int modifyAttack(int damage) {
+        return 0;
+    }
+
+    public boolean hasAttackModifier() {
+        return hasAttackModifier;
+    }
+
+    public void setHasAttackModifier(boolean hasAttackModifier) {
+        this.hasAttackModifier = hasAttackModifier;
+    }
+
+    public boolean isConsumable() {
+        return consumable;
+    }
+
+    public void setConsumable(boolean consumable) {
+        this.consumable = consumable;
     }
 }
