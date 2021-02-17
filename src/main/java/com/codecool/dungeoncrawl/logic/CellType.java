@@ -11,7 +11,8 @@ public enum CellType {
     TILEDFLOOR("tiled-floor"),
     FILL("fill"),
     ROCK("rock"),
-    WALLRUIN("wall-ruin");
+    WALLRUIN("wall-ruin"),
+    DEBRIS("debris");
 
     private final String tileName;
 
