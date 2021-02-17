@@ -124,9 +124,9 @@ public class Main extends Application {
     }
 
     private void attack(Actor enemyAtTarget) {
-        enemyAtTarget.damage(1);
+        enemyAtTarget.damage(50);                               // this is how much Player damages target
         enemyAtTarget.update();
-        if (enemyAtTarget.isAlive()) map.getPlayer().damage(10);
+        if (enemyAtTarget.isAlive()) map.getPlayer().damage(1); // this is how much the target damages back if still alive
         map.getPlayer().update();
     }
 
@@ -146,7 +146,7 @@ public class Main extends Application {
     private void enemyAttackOrMove() {
         for (Actor enemy : map.getActors()) {
             if (isPlayerNear(enemy) && enemy.isAlive()) {
-                map.getPlayer().damage(1);
+                map.getPlayer().damage(1);                      // this is how much the enemy damage the player when they attack
             } else if (enemy.isAlive())
                 enemy.move(randomNumber(3) - 1, randomNumber(3) - 1);
         }
