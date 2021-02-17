@@ -118,7 +118,7 @@ public class Main extends Application {
     private void attackOrMove(int dx, int dy) {
         Cell targetCell = map.getPlayer().getCell().getNeighbor(dx, dy);
         Actor enemyAtTarget = checkEnemy(targetCell);
-        if (enemyAtTarget != null) {
+        if (enemyAtTarget != null && enemyAtTarget.isAlive()) {
             attack(enemyAtTarget);
         } else { map.getPlayer().move(dx, dy); }
     }
