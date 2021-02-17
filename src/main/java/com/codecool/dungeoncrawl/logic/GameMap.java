@@ -13,7 +13,6 @@ public class GameMap {
     private Cell[][] cells;
 
     private Player player;
-    private Skeleton skeleton;
     private List<Actor> actors = new LinkedList<>();
 
     public GameMap(int width, int height, CellType defaultCellType) {
@@ -25,14 +24,6 @@ public class GameMap {
                 cells[x][y] = new Cell(this, x, y, defaultCellType);
             }
         }
-    }
-
-    public void setSkeleton(Skeleton skeleton) {
-        this.skeleton = skeleton;
-    }
-
-    public Skeleton getSkeleton() {
-        return skeleton;
     }
 
     public Cell getCell(int x, int y) {
