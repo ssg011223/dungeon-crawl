@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Door;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -127,9 +128,11 @@ public class Main extends Application {
         if (enemyAtTarget != null) {
             attack(enemyAtTarget);
         } else {
-            if (map.getPlayer().getCell().getNeighbor(dx, dy).getItem() != null) map.getPlayer().getCell().getNeighbor(dx, dy).getItem().pickUp(map.getPlayer());
-            if (map.getPlayer().getCell().getNeighbor(dx, dy).getActor() instanceof Door) ((Door) map.getPlayer().getCell().getNeighbor(dx, dy).getActor()).open(map.getPlayer());
-            map.getPlayer().move(dx, dy);
+            Player player = map.getPlayer();
+            Cell neighbouringCell = player.getCell().getNeighbor(dx,dy);
+            player.move(dx, dy);
+            if (neighbouringCell.getActor() instanceof Door) ((Door) neighbouringCell.getActor()).open(player);
+            if (player.getCell().getItem() != null) player.getCell().getItem().pickUp(player);
         }
     }
 
