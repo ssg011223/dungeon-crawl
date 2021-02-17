@@ -39,7 +39,7 @@ public class Tiles {
         tileMap.put("tiled-floor", new Tile(16,0));
         tileMap.put("fill", new Tile(6,0));
         tileMap.put("rock", new Tile(5, 2));
-        tileMap.put("wall-ruin", new Tile(1, 11));
+        tileMap.put("wall-ruin", new Tile(2, 11));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
