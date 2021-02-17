@@ -6,8 +6,8 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 
 public abstract class Item implements Drawable {
     private Cell cell;
-    private boolean consumable;
-    private boolean hasAttackModifier;
+    private boolean consumable = false;
+    private boolean hasAttackModifier = false;
 
     public Item(Cell cell) {
         this.cell = cell;
