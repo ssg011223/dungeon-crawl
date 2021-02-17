@@ -6,6 +6,7 @@ public class Orc extends Actor{
 
     public Orc(Cell cell) {
         super(cell);
+        this.setAttack(5);
     }
 
     @Override
