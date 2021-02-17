@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Orc;
 import com.codecool.dungeoncrawl.logic.actors.Door;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
@@ -36,7 +37,6 @@ public class MapLoader {
                         case 's':
                             cell.setType(CellType.FLOOR);
                             Skeleton skeleton = new Skeleton(cell);
-                            map.setSkeleton(skeleton);
                             map.addActors(skeleton);
                             break;
                         case '@':
@@ -46,6 +46,11 @@ public class MapLoader {
                         case 'k':
                             cell.setType(CellType.FLOOR);
                             new Key(cell);
+                            break;
+                        case 'o':
+                            cell.setType(CellType.FLOOR);
+                            Orc orc = new Orc(cell);
+                            map.addActors(orc);
                             break;
                         case 'd':
                             cell.setType(CellType.STAIRS);

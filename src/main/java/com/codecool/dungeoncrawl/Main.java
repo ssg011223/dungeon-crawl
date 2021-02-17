@@ -94,12 +94,12 @@ public class Main extends Application {
         Button exitButton = new Button("EXIT");
         exitButton.setOnAction(event -> System.exit(0));
         exitButton.setStyle(buttonStyle);
-        VBox dialogVbox = new VBox(20);
+        VBox dialogVbox = new VBox();
         dialogVbox.getChildren().add(new Text(modalText));
         dialogVbox.getChildren().add(exitButton);
-        dialogVbox.setAlignment(Pos.CENTER);
+        dialogVbox.setAlignment(Pos.TOP_CENTER);
         dialogVbox.setStyle(modalStyle);
-        Scene dialogScene = new Scene(dialogVbox, 150, 100);
+        Scene dialogScene = new Scene(dialogVbox, 150, 70);
         dialog.setScene(dialogScene);
         dialog.show();
     }
@@ -132,9 +132,9 @@ public class Main extends Application {
     }
 
     private void attack(Actor enemyAtTarget) {
-        enemyAtTarget.damage(50);
+        enemyAtTarget.damage(map.getPlayer().getAttack());                               // this is how much Player damages target
         enemyAtTarget.update();
-        if (enemyAtTarget.isAlive()) map.getPlayer().damage(2);
+        if (enemyAtTarget.isAlive()) map.getPlayer().damage(2); // this is how much the target damages back if still alive
         map.getPlayer().update();
     }
 
@@ -154,7 +154,7 @@ public class Main extends Application {
     private void enemyAttackOrMove() {
         for (Actor enemy : map.getActors()) {
             if (isPlayerNear(enemy) && enemy.isAlive()) {
-                map.getPlayer().damage(1);
+                map.getPlayer().damage(enemy.getAttack());                      // this is how much the enemy damage the player when they attack
             } else if (enemy.isAlive())
                 enemy.move(randomNumber(3) - 1, randomNumber(3) - 1);
         }
