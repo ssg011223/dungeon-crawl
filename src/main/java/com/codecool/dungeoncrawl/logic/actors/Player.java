@@ -11,7 +11,7 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
-        this.setAttack(5); // for testing
+        this.setAttack(5);
     }
 
     public String getTileName() {
@@ -33,7 +33,7 @@ public class Player extends Actor {
 
     @Override
     public int getAttack() {
-        int resAttack = 0;
+        int resAttack = super.getAttack();
         for (Item item: this.getInventory()) {
             if (item.hasAttackModifier()) {
                 resAttack += item.modifyAttack(super.getAttack());
