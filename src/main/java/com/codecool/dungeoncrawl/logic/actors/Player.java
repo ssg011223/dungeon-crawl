@@ -5,14 +5,13 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Player extends Actor {
     private ArrayList<Item> inventory = new ArrayList<>(8);
 
     public Player(Cell cell) {
         super(cell);
-        this.setAttack(50); // for testing
+        this.setAttack(5); // for testing
     }
 
     public String getTileName() {
@@ -30,5 +29,16 @@ public class Player extends Actor {
         map.setPlayer(this);
         map.getCell(x, y).setActor(this);
         this.setCell(map.getCell(x, y));
+    }
+
+    @Override
+    public int getAttack() {
+        int resAttack = 0;
+        for (Item item: this.getInventory()) {
+            if (item.hasAttackModifier()) {
+                resAttack += item.modifyAttack(super.getAttack());
+            }
+        }
+        return resAttack;
     }
 }
