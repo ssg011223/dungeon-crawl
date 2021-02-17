@@ -198,7 +198,7 @@ public class Main extends Application {
             }
     }
 
-    private void refresh() {
+    private void refreshMap() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -213,7 +213,9 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
+    }
+
+    private void refreshInventory() {
         StringBuilder inventoryPrint = new StringBuilder();
         for (int i = 0; i < map.getPlayer().getInventory().size(); i++) {
             if (i > 0) {
@@ -221,6 +223,12 @@ public class Main extends Application {
             } else inventoryPrint.append(map.getPlayer().getInventory().get(i).getClass().getSimpleName());
         }
         inventoryLabel.setText(inventoryPrint.toString());
+    }
+
+    private void refresh() {
+        refreshMap();
+        healthLabel.setText("" + map.getPlayer().getHealth());
+        refreshInventory();
         if (!map.getPlayer().isAlive()) {
             modalWindow(gameStage, GameOver, "");
         }
