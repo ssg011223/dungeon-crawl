@@ -77,6 +77,9 @@ public class MapLoader {
                         case 'X':
                             cell.setType(CellType.WALLRUIN);
                             break;
+                        case ',':
+                            cell.setType(CellType.DEBRIS);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
