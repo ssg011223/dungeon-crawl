@@ -9,6 +9,7 @@ public abstract class Actor implements Drawable {
     private int health = 10;
     private boolean isAlive;
     private Actor hiddenOccupant;
+    private int attack = 10;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -27,7 +28,7 @@ public abstract class Actor implements Drawable {
     public void move(int dx, int dy) {
         Cell nextCell = cell.getNeighbor(dx, dy);
         if (nextCell.getType().equals(CellType.FLOOR)) {
-            if (hiddenOccupant == null) cell.setActor(null);
+            if (hiddenOccupant == null || hiddenOccupant.isAlive()) cell.setActor(null);
             else cell.setActor(hiddenOccupant);
             hiddenOccupant = nextCell.getActor();
             nextCell.setActor(this);
@@ -58,4 +59,12 @@ public abstract class Actor implements Drawable {
             this.isAlive = false;
         }
     };
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
 }
