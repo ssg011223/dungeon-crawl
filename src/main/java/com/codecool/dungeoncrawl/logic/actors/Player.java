@@ -11,6 +11,7 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
+        this.setAttack(50); // for testing
     }
 
     public String getTileName() {
