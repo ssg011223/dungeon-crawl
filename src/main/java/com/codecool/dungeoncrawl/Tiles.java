@@ -40,6 +40,7 @@ public class Tiles {
         tileMap.put("fill", new Tile(6,0));
         tileMap.put("rock", new Tile(5, 2));
         tileMap.put("wall-ruin", new Tile(2, 11));
+        tileMap.put("debris", new Tile(1, 0));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
