@@ -55,6 +55,8 @@ public class Main extends Application {
             "    -fx-background-color:\n" +
             "        linear-gradient(#6a040f, #370617),\n" +
             "        radial-gradient(center 50% -40%, radius 200%, #d00000 45%, #9d0208 50%);\n";
+    int xCoord = 0;
+    int yCoord = 1;
 
     public static void main(String[] args) {
         launch(args);
@@ -196,7 +198,7 @@ public class Main extends Application {
             }
     }
 
-    private int mapMover() {
+    private int[] mapMover() {
         int offsetX = 0;
         int offsetY = 0;
         int displayWidth = 25;
@@ -204,28 +206,36 @@ public class Main extends Application {
         int mapX = map.getWidth();
         int mapY = map.getHeight();
         int playerX = map.getPlayer().getX();
+        int playerY = map.getPlayer().getY();
         if (playerX + (displayWidth / 2) >= mapX) {
             offsetX = mapX - displayWidth;
         }
         else if (playerX > (displayWidth / 2)) {
             offsetX = playerX - (displayWidth / 2);
         }
-        return offsetX;
+        if (playerY + (dislpayHeight / 2) >= mapY) {
+            offsetY = mapY - dislpayHeight;
+        }
+        else if (playerY > (dislpayHeight / 2)) {
+            offsetY = playerY - (dislpayHeight / 2);
+        }
+        int[] coords = {offsetX, offsetY};
+        return coords;
     }
 
     private void refreshMap() {
-        int mapOffsetX = mapMover();
+        int[] mapOffset = mapMover();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x - mapOffsetX, y);
+                    Tiles.drawTile(context, cell.getActor(), x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 } else if (cell.getItem() != null) {
-                    Tiles.drawTile(context, cell.getItem(), x - mapOffsetX, y);
+                    Tiles.drawTile(context, cell.getItem(), x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 } else {
-                    Tiles.drawTile(context, cell, x - mapOffsetX, y);
+                    Tiles.drawTile(context, cell, x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 }
             }
         }
