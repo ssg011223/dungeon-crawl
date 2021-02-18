@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.logic.actors.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ public class GameMap {
 
     private Player player;
     private List<Actor> actors = new LinkedList<>();
+    private Boss boss;
 
     public GameMap(int width, int height, CellType defaultCellType) {
         this.width = width;
@@ -55,5 +57,13 @@ public class GameMap {
 
     public void addActors(Actor enemies) {
         actors.add(enemies);
-    };
+    }
+
+    public Boss getBoss() {
+        return boss;
+    }
+
+    public void setBoss(Boss boss) {
+        this.boss = boss;
+    }
 }

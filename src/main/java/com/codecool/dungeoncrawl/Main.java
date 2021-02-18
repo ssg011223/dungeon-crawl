@@ -266,5 +266,8 @@ public class Main extends Application {
         if (!map.getPlayer().isAlive()) {
             modalWindow(gameStage, GameOver, "");
         }
+        if (!maps[1].getBoss().isAlive()) {
+            modalWindow(gameStage, "YOU WON", "");
+        }
     }
 }
