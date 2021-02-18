@@ -9,6 +9,7 @@ public abstract class Obstacle implements Drawable {
 
     public Obstacle(Cell cell) {
         this.cell = cell;
+        this.cell.setObstacle(this);
     }
 
     public abstract void remove(Player player);
