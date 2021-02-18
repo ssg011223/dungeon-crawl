@@ -36,6 +36,7 @@ public class Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
+    Label attackLabel = new Label();
     Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
@@ -70,8 +71,10 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Inventory: "), 0, 1);
-        ui.add(inventoryLabel, 1, 1);
+        ui.add(new Label("Attack: "), 0, 1);
+        ui.add(attackLabel, 1, 1);
+        ui.add(new Label("Inventory: "), 0, 2);
+        ui.add(inventoryLabel, 1, 2);
 
         BorderPane borderPane = new BorderPane();
 
@@ -108,7 +111,7 @@ public class Main extends Application {
 
     private int randomNumber(int upperBound) {
         return RANDOM.nextInt(upperBound);
-    };
+    }
 
     private Actor checkEnemy(Cell targetCell) {
         for (Actor enemy : map.getActors()) {
@@ -214,6 +217,7 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        attackLabel.setText("" + map.getPlayer().getAttack());
         StringBuilder inventoryPrint = new StringBuilder();
         for (int i = 0; i < map.getPlayer().getInventory().size(); i++) {
             if (i > 0) {
