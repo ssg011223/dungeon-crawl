@@ -109,6 +109,12 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             new Axe(cell);
                             break;
+                        case 'b':
+                            cell.setType(CellType.FLOOR);
+                            Boss boss = new Boss(cell);
+                            map.addActors(boss);
+                            map.setBoss(boss);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }
