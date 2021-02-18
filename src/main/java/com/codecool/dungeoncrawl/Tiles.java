@@ -44,6 +44,7 @@ public class Tiles {
         tileMap.put("sword", new Tile(1, 29));
         tileMap.put("health", new Tile(23, 22));
         tileMap.put("tree", new Tile(4, 2));
+        tileMap.put("axe", new Tile(8, 30));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {

@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.items.Axe;
 import com.codecool.dungeoncrawl.logic.items.Health;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Sword;
@@ -95,6 +96,10 @@ public class MapLoader {
                         case 't':
                             cell.setType(CellType.FLOOR);
                             new Tree(cell);
+                            break;
+                        case 'a':
+                            cell.setType(CellType.FLOOR);
+                            new Axe(cell);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
