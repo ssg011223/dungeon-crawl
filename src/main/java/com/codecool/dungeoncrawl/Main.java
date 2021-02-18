@@ -155,6 +155,7 @@ public class Main extends Application {
     private boolean isPlayerNear(Actor enemy) {
         for (int rows = -1; rows < 2; rows++) {
             for (int columns = -1; columns < 2; columns++) {
+                if (enemy.getCell().getNeighbor(rows, columns) == null) continue;
                 if (enemy.getCell().getNeighbor(rows, columns).getActor() != null) {
                     if (enemy.getCell().getNeighbor(rows, columns).getActor().equals(map.getPlayer())) {
                         return true;
