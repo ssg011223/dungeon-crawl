@@ -1,9 +1,6 @@
 package com.codecool.dungeoncrawl.logic;
 
-import com.codecool.dungeoncrawl.logic.actors.Orc;
-import com.codecool.dungeoncrawl.logic.actors.Door;
-import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
+import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
@@ -37,8 +34,7 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            Skeleton skeleton = new Skeleton(cell);
-                            map.addActors(skeleton);
+                            map.addActors(new Skeleton(cell));
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);
@@ -50,8 +46,7 @@ public class MapLoader {
                             break;
                         case 'o':
                             cell.setType(CellType.FLOOR);
-                            Orc orc = new Orc(cell);
-                            map.addActors(orc);
+                            map.addActors(new Orc(cell));
                             break;
                         case 'd':
                             cell.setType(CellType.STAIRS);
@@ -89,6 +84,14 @@ public class MapLoader {
                             new Sword(cell);
                             break;
                         case '~':
+                            cell.setType(CellType.WATER);
+                            break;
+                        case 'g':
+                            map.addActors(new Ghost(cell));
+                            cell.setType(CellType.FLOOR);
+                            break;
+                        case 'K':
+                            map.addActors(new Kraken(cell));
                             cell.setType(CellType.WATER);
                             break;
                         default:
