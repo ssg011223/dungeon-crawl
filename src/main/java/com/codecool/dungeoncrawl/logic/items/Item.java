@@ -19,6 +19,10 @@ public abstract class Item implements Drawable {
         player.addToInventory(this);
     }
 
+    public Cell getCell() {
+        return cell;
+    }
+
     public int modifyAttack(int damage) {
         return 0;
     }

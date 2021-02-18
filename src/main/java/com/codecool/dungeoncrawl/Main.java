@@ -5,8 +5,6 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
-import com.codecool.dungeoncrawl.logic.actors.Door;
-import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -36,6 +34,7 @@ public class Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
+    Label attackLabel = new Label();
     Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
@@ -70,8 +69,10 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Inventory: "), 0, 1);
-        ui.add(inventoryLabel, 1, 1);
+        ui.add(new Label("Attack: "), 0, 1);
+        ui.add(attackLabel, 1, 1);
+        ui.add(new Label("Inventory: "), 0, 2);
+        ui.add(inventoryLabel, 1, 2);
 
         BorderPane borderPane = new BorderPane();
 
@@ -108,7 +109,7 @@ public class Main extends Application {
 
     private int randomNumber(int upperBound) {
         return RANDOM.nextInt(upperBound);
-    };
+    }
 
     private Actor checkEnemy(Cell targetCell) {
         for (Actor enemy : map.getActors()) {
@@ -128,7 +129,7 @@ public class Main extends Application {
             Player player = map.getPlayer();
             Cell neighbouringCell = player.getCell().getNeighbor(dx,dy);
             player.move(dx, dy);
-            if (neighbouringCell.getActor() instanceof Door) ((Door) neighbouringCell.getActor()).open(player);
+            if (neighbouringCell.getObstacle() != null) neighbouringCell.getObstacle().remove(player);
             if (player.getCell().getItem() != null) player.getCell().getItem().pickUp(player);
             if (player.getCell().getType().equals(CellType.STAIRS)) {
                 if (this.map == maps[0]) {
@@ -206,6 +207,8 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
+                } else if (cell.getObstacle() != null) {
+                    Tiles.drawTile(context, cell.getObstacle(), x, y);
                 } else if (cell.getItem() != null) {
                     Tiles.drawTile(context, cell.getItem(), x, y);
                 } else {
@@ -214,6 +217,7 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        attackLabel.setText("" + map.getPlayer().getAttack());
         StringBuilder inventoryPrint = new StringBuilder();
         for (int i = 0; i < map.getPlayer().getInventory().size(); i++) {
             if (i > 0) {
