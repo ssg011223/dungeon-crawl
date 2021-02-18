@@ -105,6 +105,7 @@ public class Main extends Application {
             this.restart();
             dialog.close();
         });
+        dialog.setOnCloseRequest(event -> System.exit(0));
         replayButton.setStyle(buttonStyle);
         VBox dialogVbox = new VBox();
         dialogVbox.getChildren().add(new Text(modalText));
