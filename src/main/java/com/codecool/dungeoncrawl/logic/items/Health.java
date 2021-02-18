@@ -15,6 +15,7 @@ public class Health extends Item{
 
     @Override
     public void pickUp(Player player) {
+        super.getCell().setItem(null);
         player.setHealth(player.getHealth() + 5);
     }
 }
