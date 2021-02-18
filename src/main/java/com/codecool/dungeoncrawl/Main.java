@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class Main extends Application {
@@ -99,14 +100,27 @@ public class Main extends Application {
         Button exitButton = new Button("EXIT");
         exitButton.setOnAction(event -> System.exit(0));
         exitButton.setStyle(buttonStyle);
+        Button replayButton = new Button("PLAY AGAIN");
+        replayButton.setOnAction(event -> {
+            this.restart();
+            dialog.close();
+        });
+        replayButton.setStyle(buttonStyle);
         VBox dialogVbox = new VBox();
         dialogVbox.getChildren().add(new Text(modalText));
         dialogVbox.getChildren().add(exitButton);
+        dialogVbox.getChildren().add(replayButton);
         dialogVbox.setAlignment(Pos.TOP_CENTER);
         dialogVbox.setStyle(modalStyle);
-        Scene dialogScene = new Scene(dialogVbox, 150, 70);
+        Scene dialogScene = new Scene(dialogVbox, 150, 100);
         dialog.setScene(dialogScene);
         dialog.show();
+    }
+
+    private void restart() {
+        this.maps = new GameMap[] {MapLoader.loadMap("map.txt"), MapLoader.loadMap("map2.txt")};
+        this.map = maps[0];
+        this.refresh();
     }
 
     private int randomNumber(int upperBound) {
