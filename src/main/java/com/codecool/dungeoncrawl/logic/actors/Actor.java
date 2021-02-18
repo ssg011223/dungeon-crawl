@@ -17,12 +17,12 @@ public abstract class Actor implements Drawable {
         this.isAlive = true;
     }
 
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
-
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public void move(int dx, int dy) {
@@ -74,7 +74,7 @@ public abstract class Actor implements Drawable {
         if (this.health < 1) {
             this.isAlive = false;
         }
-    };
+    }
 
     public int getAttack() {
         return attack;
