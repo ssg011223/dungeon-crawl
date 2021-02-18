@@ -56,6 +56,8 @@ public class Main extends Application {
             "    -fx-background-color:\n" +
             "        linear-gradient(#6a040f, #370617),\n" +
             "        radial-gradient(center 50% -40%, radius 200%, #d00000 45%, #9d0208 50%);\n";
+    int xCoord = 0;
+    int yCoord = 1;
 
     public static void main(String[] args) {
         launch(args);
@@ -199,23 +201,52 @@ public class Main extends Application {
             }
     }
 
-    private void refresh() {
+    private int[] mapMover() {
+        int offsetX = 0;
+        int offsetY = 0;
+        int displayWidth = 25;
+        int dislpayHeight = 20;
+        int mapX = map.getWidth();
+        int mapY = map.getHeight();
+        int playerX = map.getPlayer().getX();
+        int playerY = map.getPlayer().getY();
+        if (playerX + (displayWidth / 2) >= mapX) {
+            offsetX = mapX - displayWidth;
+        }
+        else if (playerX > (displayWidth / 2)) {
+            offsetX = playerX - (displayWidth / 2);
+        }
+        if (playerY + (dislpayHeight / 2) >= mapY) {
+            offsetY = mapY - dislpayHeight;
+        }
+        else if (playerY > (dislpayHeight / 2)) {
+            offsetY = playerY - (dislpayHeight / 2);
+        }
+        int[] coords = {offsetX, offsetY};
+        return coords;
+    }
+
+    private void refreshMap() {
+        int[] mapOffset = mapMover();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x, y);
+                    Tiles.drawTile(context, cell.getActor(), x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 } else if (cell.getObstacle() != null) {
-                    Tiles.drawTile(context, cell.getObstacle(), x, y);
+                    Tiles.drawTile(context, cell.getObstacle(), x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 } else if (cell.getItem() != null) {
-                    Tiles.drawTile(context, cell.getItem(), x, y);
+                    Tiles.drawTile(context, cell.getItem(), x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 } else {
-                    Tiles.drawTile(context, cell, x, y);
+                    Tiles.drawTile(context, cell, x - mapOffset[xCoord], y - mapOffset[yCoord]);
                 }
             }
         }
+    }
+
+    private void refreshInventory() {
         healthLabel.setText("" + map.getPlayer().getHealth());
         attackLabel.setText("" + map.getPlayer().getAttack());
         StringBuilder inventoryPrint = new StringBuilder();
@@ -225,6 +256,12 @@ public class Main extends Application {
             } else inventoryPrint.append(map.getPlayer().getInventory().get(i).getClass().getSimpleName());
         }
         inventoryLabel.setText(inventoryPrint.toString());
+    }
+
+    private void refresh() {
+        refreshMap();
+        healthLabel.setText("" + map.getPlayer().getHealth());
+        refreshInventory();
         if (!map.getPlayer().isAlive()) {
             modalWindow(gameStage, GameOver, "");
         }
