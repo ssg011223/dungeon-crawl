@@ -55,6 +55,10 @@ public class MapLoader {
                             cell.setType(CellType.STAIRS);
                             new Door(cell);
                             break;
+                        case 'D':
+                            cell.setType(CellType.TILEDFLOOR);
+                            new Door(cell);
+                            break;
                         case 'S':
                             cell.setType(CellType.STAIRS);
                             break;

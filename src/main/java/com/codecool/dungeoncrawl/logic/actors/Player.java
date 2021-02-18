@@ -12,7 +12,7 @@ public class Player extends Actor {
     public Player(Cell cell) {
         super(cell);
         this.setAttack(5);
-        this.setHealth(200);
+        this.setHealth(15);
     }
 
     public String getTileName() {
