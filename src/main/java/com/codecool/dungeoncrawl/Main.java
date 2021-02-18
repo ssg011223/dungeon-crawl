@@ -35,7 +35,6 @@ public class Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
-    Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
     String GameOver = "GAME OVER";
@@ -197,18 +196,36 @@ public class Main extends Application {
             }
     }
 
+    private int mapMover() {
+        int offsetX = 0;
+        int offsetY = 0;
+        int displayWidth = 25;
+        int dislpayHeight = 20;
+        int mapX = map.getWidth();
+        int mapY = map.getHeight();
+        int playerX = map.getPlayer().getX();
+        if (playerX + (displayWidth / 2) >= mapX) {
+            offsetX = mapX - displayWidth;
+        }
+        else if (playerX > (displayWidth / 2)) {
+            offsetX = playerX - (displayWidth / 2);
+        }
+        return offsetX;
+    }
+
     private void refreshMap() {
+        int mapOffsetX = mapMover();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x, y);
+                    Tiles.drawTile(context, cell.getActor(), x - mapOffsetX, y);
                 } else if (cell.getItem() != null) {
-                    Tiles.drawTile(context, cell.getItem(), x, y);
+                    Tiles.drawTile(context, cell.getItem(), x - mapOffsetX, y);
                 } else {
-                    Tiles.drawTile(context, cell, x, y);
+                    Tiles.drawTile(context, cell, x - mapOffsetX, y);
                 }
             }
         }
