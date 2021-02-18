@@ -1,10 +1,11 @@
-package com.codecool.dungeoncrawl.logic.actors;
+package com.codecool.dungeoncrawl.logic.obstacles;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.items.Key;
 
-public class Door extends Actor{
+public class Door extends Obstacle{
     public Door(Cell cell) {
         super(cell);
     }
@@ -14,10 +15,11 @@ public class Door extends Actor{
         return "door";
     }
 
-    public void open(Player player) {
+    @Override
+    public void remove(Player player) {
         for (Item item: player.getInventory()) {
             if (item instanceof Key) {
-                this.getCell().setActor(null);
+                this.getCell().setObstacle(null);
                 player.removeFromInventory(item);
                 return;
             }
