@@ -267,7 +267,7 @@ public class Main extends Application {
             modalWindow(gameStage, GameOver, "");
         }
         if (!maps[1].getBoss().isAlive()) {
-            modalWindow(gameStage, GameOver, "");
+            modalWindow(gameStage, "YOU WON", "");
         }
     }
 }
