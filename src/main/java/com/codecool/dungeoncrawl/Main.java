@@ -5,8 +5,6 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
-import com.codecool.dungeoncrawl.logic.actors.Door;
-import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -131,7 +129,7 @@ public class Main extends Application {
             Player player = map.getPlayer();
             Cell neighbouringCell = player.getCell().getNeighbor(dx,dy);
             player.move(dx, dy);
-            if (neighbouringCell.getActor() instanceof Door) ((Door) neighbouringCell.getActor()).open(player);
+            if (neighbouringCell.getObstacle() != null) neighbouringCell.getObstacle().remove(player);
             if (player.getCell().getItem() != null) player.getCell().getItem().pickUp(player);
             if (player.getCell().getType().equals(CellType.STAIRS)) {
                 if (this.map == maps[0]) {
