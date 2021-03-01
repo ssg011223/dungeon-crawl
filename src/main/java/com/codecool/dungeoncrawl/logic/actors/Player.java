@@ -8,11 +8,13 @@ import java.util.ArrayList;
 
 public class Player extends Actor {
     private ArrayList<Item> inventory = new ArrayList<>(8);
+    private String name;
 
     public Player(Cell cell) {
         super(cell);
         this.setAttack(5);
         this.setHealth(15);
+        this.name = "Player";
     }
 
     public String getTileName() {
@@ -41,5 +43,13 @@ public class Player extends Actor {
             }
         }
         return resAttack;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
