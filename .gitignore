@@ -1,4 +1,10 @@
+# IDEA folder
 .idea/*
 .idea
+
+# Compiler out folder
 target/*
 target/
+
+# .IML file
+*.iml
