@@ -73,6 +73,7 @@ public class Main extends Application {
         ui.add(attackLabel, 1, 1);
         ui.add(new Label("Inventory: "), 0, 2);
         ui.add(inventoryLabel, 1, 2);
+        ui.add(saveButton(primaryStage), 0, 5);
 
         BorderPane borderPane = new BorderPane();
 
@@ -89,7 +90,13 @@ public class Main extends Application {
         gameStage = primaryStage;
     }
 
-    private void modalWindow(Stage primaryStage, String modalTitle, String modalText) {
+    private Button saveButton(Stage primaryStage) {
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(event -> modalSaveWindow(primaryStage));
+        return saveButton;
+    }
+
+    private void modalExitWindow(Stage primaryStage, String modalTitle, String modalText) {
         final Stage dialog = new Stage();
         dialog.setTitle(modalTitle);
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -111,6 +118,28 @@ public class Main extends Application {
         dialogVbox.setAlignment(Pos.TOP_CENTER);
         dialogVbox.setStyle(modalStyle);
         Scene dialogScene = new Scene(dialogVbox, 150, 100);
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    private void modalSaveWindow(Stage primaryStage) {
+        final Stage dialog = new Stage();
+        dialog.setTitle("Save Game");
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        dialog.setOnCloseRequest(event -> dialog.close());
+
+        Button saveButton = new Button("SAVE");
+        saveButton.setOnAction(event -> System.exit(0));
+        Button cancelSaveButton = new Button("CANCEL");
+        cancelSaveButton.setOnAction(event -> dialog.close());
+
+        VBox dialogVbox = new VBox();
+        dialogVbox.getChildren().addAll(saveButton, cancelSaveButton);
+        dialogVbox.setAlignment(Pos.TOP_CENTER);
+
+        Scene dialogScene = new Scene(dialogVbox, 150, 75);
+
         dialog.setScene(dialogScene);
         dialog.show();
     }
@@ -276,10 +305,10 @@ public class Main extends Application {
         healthLabel.setText("" + map.getPlayer().getHealth());
         refreshInventory();
         if (!map.getPlayer().isAlive()) {
-            modalWindow(gameStage, GameOver, "");
+            modalExitWindow(gameStage, GameOver, "");
         }
         if (!maps[1].getBoss().isAlive()) {
-            modalWindow(gameStage, "YOU WON", "");
+            modalExitWindow(gameStage, "YOU WON", "");
         }
     }
 }
