@@ -22,8 +22,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 import java.util.Random;
 
 public class Main extends Application {
@@ -36,7 +34,6 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
     Label attackLabel = new Label();
-    Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
     String GameOver = "GAME OVER";
