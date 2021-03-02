@@ -11,6 +11,7 @@ public class GameMap {
     private int width;
     private int height;
     private Cell[][] cells;
+    private String mapName;
 
     private Player player;
     private List<Actor> actors = new LinkedList<>();
@@ -65,5 +66,13 @@ public class GameMap {
 
     public void setBoss(Boss boss) {
         this.boss = boss;
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
+
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
     }
 }
