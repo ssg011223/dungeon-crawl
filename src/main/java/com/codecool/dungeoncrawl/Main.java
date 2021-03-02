@@ -16,6 +16,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -87,7 +90,12 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressEvent -> onKeyPressed(keyPressEvent));
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressEvent -> {
+            if (keyPressEvent.isControlDown() && keyPressEvent.getCode() == KeyCode.S) {
+                modalSaveWindow(primaryStage);
+            }
+            onKeyPressed(keyPressEvent);
+        });
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
@@ -133,14 +141,20 @@ public class Main extends Application {
         dialog.initOwner(primaryStage);
         dialog.setOnCloseRequest(event -> dialog.close());
 
+        TextField textField = new TextField();
+
         Button saveButton = new Button("SAVE");
-        saveButton.setOnAction(event -> saveGame());
+        saveButton.setOnAction(event -> {
+            saveGame();
+            dialog.close();
+        });
         Button cancelSaveButton = new Button("CANCEL");
         cancelSaveButton.setOnAction(event -> dialog.close());
 
         VBox dialogVbox = new VBox();
+        dialogVbox.getChildren().add(textField);
         dialogVbox.getChildren().addAll(saveButton, cancelSaveButton);
-        dialogVbox.setAlignment(Pos.TOP_CENTER);
+        dialogVbox.setAlignment(Pos.BOTTOM_CENTER);
 
         Scene dialogScene = new Scene(dialogVbox, 150, 75);
 
