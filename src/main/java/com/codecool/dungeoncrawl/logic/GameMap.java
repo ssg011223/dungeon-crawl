@@ -4,10 +4,11 @@ import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Boss;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GameMap {
+public class GameMap implements Serializable {
     private int width;
     private int height;
     private Cell[][] cells;

@@ -1,8 +1,9 @@
 package com.codecool.dungeoncrawl.model;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 
-public class BaseModel {
+public class BaseModel implements Serializable {
     // null means not saved
     protected Integer id;
 
