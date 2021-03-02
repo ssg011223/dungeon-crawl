@@ -164,12 +164,14 @@ public class Main extends Application {
 
     private void saveGame() {
         GameDatabaseManager gameDbManager = new GameDatabaseManager();
+
         try {
             gameDbManager.setup();
         } catch (SQLException SQLex) {
             System.out.println("SQL ERROR");
         }
         gameDbManager.savePlayer(map.getPlayer());
+        gameDbManager.saveGameState();
 
     }
 
