@@ -83,7 +83,7 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPresEvent -> onKeyPressed(keyPresEvent));
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
