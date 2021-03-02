@@ -1,11 +1,13 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,6 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 import java.util.Random;
 
 public class Main extends Application {
@@ -130,7 +134,7 @@ public class Main extends Application {
         dialog.setOnCloseRequest(event -> dialog.close());
 
         Button saveButton = new Button("SAVE");
-        saveButton.setOnAction(event -> System.exit(0));
+        saveButton.setOnAction(event -> saveGame());
         Button cancelSaveButton = new Button("CANCEL");
         cancelSaveButton.setOnAction(event -> dialog.close());
 
@@ -142,6 +146,17 @@ public class Main extends Application {
 
         dialog.setScene(dialogScene);
         dialog.show();
+    }
+
+    private void saveGame() {
+        GameDatabaseManager gameDbManager = new GameDatabaseManager();
+        try {
+            gameDbManager.setup();
+        } catch (SQLException SQLex) {
+            System.out.println("SQL ERROR");
+        }
+        gameDbManager.savePlayer(map.getPlayer());
+
     }
 
     private void restart() {
