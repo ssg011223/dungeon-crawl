@@ -72,6 +72,7 @@ public class Main extends Application {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        ui.setVgap(2);
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
@@ -79,6 +80,19 @@ public class Main extends Application {
         ui.add(attackLabel, 1, 1);
         ui.add(new Label("Inventory: "), 0, 2);
         ui.add(inventoryLabel, 1, 2);
+
+        Button exportBtn = new Button("Export");
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                saveFileManager.export(map, maps);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        Button importBtn = new Button("Import");
+        importBtn.setOnMouseClicked(event -> savesFilesModal());
+        ui.add(exportBtn, 0, 5);
+        ui.add(importBtn, 0, 6);
 
         BorderPane borderPane = new BorderPane();
 
@@ -88,7 +102,7 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(event -> {
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             try {
                 onKeyPressed(event);
             } catch (IOException | ClassNotFoundException e) {
@@ -222,12 +236,6 @@ public class Main extends Application {
                     attackOrMove(1, 0);
                     enemyAttackOrMove();
                     refresh();
-                    break;
-                case S:
-                    saveFileManager.export(map, maps);
-                    break;
-                case L:
-                    savesFilesModal();
                     break;
             }
     }
