@@ -47,6 +47,6 @@ public class SaveFileManager {
         for (File fileEntry: folder.listFiles()) {
             saveNames.add(fileEntry.getName());
         }
-        return saveNames;
+        return saveNames.isEmpty() ? null : saveNames;
     }
 }
