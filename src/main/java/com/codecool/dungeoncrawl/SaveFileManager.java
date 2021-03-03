@@ -7,6 +7,8 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 import java.io.*;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaveFileManager {
     public void export(GameMap currentMap, GameMap[] maps) throws IOException {
@@ -36,5 +38,15 @@ public class SaveFileManager {
         state.addDiscoveredMap(maps[0]);
         state.addDiscoveredMap(maps[1]);
         return state;
+    }
+
+    public List<String> getSaveFileNames() {
+        File folder = new File("saves");
+        if (!folder.exists()) return null;
+        List<String> saveNames = new ArrayList<>(8);
+        for (File fileEntry: folder.listFiles()) {
+            saveNames.add(fileEntry.getName());
+        }
+        return saveNames;
     }
 }
