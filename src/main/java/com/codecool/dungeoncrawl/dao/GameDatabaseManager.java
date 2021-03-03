@@ -27,9 +27,10 @@ public class GameDatabaseManager {
         playerDao.add(model);
     }
 
-    public void saveGameState() {
+    public void saveGameState(String currentMap, Player player) {
+        PlayerModel model = new PlayerModel(player);
         Date savedAt = new Date(Calendar.getInstance().getTime().getTime());
-        GameState currentGameState = new GameState(currentMap.getMapName(), savedAt, new PlayerModel(currentMap.getPlayer()));
+        GameState currentGameState = new GameState(currentMap, savedAt, model);
         gameState.add(currentGameState);
     }
 
