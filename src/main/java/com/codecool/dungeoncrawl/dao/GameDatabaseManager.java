@@ -14,7 +14,17 @@ import java.util.Calendar;
 public class GameDatabaseManager {
     private PlayerDao playerDao;
     private GameStateDaoJdbc gameState;
-    private GameMap currentMap;
+//    private GameMap currentMap;
+
+    private void overWriteSave(String currentMap, Player player, String saveName) {
+
+        gameState.overWriteExistingState(GameState, saveName);
+//        playerDao.overWriteExistingPlayer()
+    }
+
+    public boolean checkName(String name) {
+        return gameState.findName(name);
+    }
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
