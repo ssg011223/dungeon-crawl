@@ -150,11 +150,18 @@ public class Main extends Application {
         Button cancelSaveButton = new Button("CANCEL");
         cancelSaveButton.setOnAction(event -> dialog.close());
 
+        VBox dialogVbox = new VBox();
         HBox dialogHbox = new HBox();
-        dialogHbox.getChildren().addAll(saveButton, cancelSaveButton);
-        dialogHbox.setAlignment(Pos.BOTTOM_CENTER);
+        dialogVbox.getChildren().add(new Text("Would you like to overwrite the\n" +
+                "already existing state?\n"));
 
-        Scene dialogScene = new Scene(dialogHbox, 150, 25);
+        dialogHbox.getChildren().addAll(saveButton, cancelSaveButton);
+        dialogHbox.setAlignment(Pos.TOP_LEFT);
+
+        dialogVbox.getChildren().add(dialogHbox);
+        dialogVbox.setAlignment(Pos.TOP_LEFT);
+
+        Scene dialogScene = new Scene(dialogVbox, 220, 80);
 
         dialog.setScene(dialogScene);
         dialog.show();
