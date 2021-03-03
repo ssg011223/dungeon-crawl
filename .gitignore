@@ -8,3 +8,6 @@ target/
 
 # .IML file
 *.iml
+
+# .log files
+*.log
