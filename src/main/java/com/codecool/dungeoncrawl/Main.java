@@ -135,6 +135,41 @@ public class Main extends Application {
         dialog.show();
     }
 
+    private void saveOverWriteModal(Stage primaryStage, String saveName) {
+        final Stage dialog = new Stage();
+        dialog.setTitle("Save already exists!");
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        dialog.setOnCloseRequest(event -> dialog.close());
+
+        Button saveButton = new Button("OVERWRITE");
+        saveButton.setOnAction(event -> {
+            overWriteSaveGame(saveName);
+            dialog.close();
+        });
+        Button cancelSaveButton = new Button("CANCEL");
+        cancelSaveButton.setOnAction(event -> dialog.close());
+
+        HBox dialogHbox = new HBox();
+        dialogHbox.getChildren().addAll(saveButton, cancelSaveButton);
+        dialogHbox.setAlignment(Pos.BOTTOM_CENTER);
+
+        Scene dialogScene = new Scene(dialogHbox, 150, 25);
+
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    private void overWriteSaveGame(String saveName) {
+        GameDatabaseManager gameDbManager = new GameDatabaseManager();
+        try {
+            gameDbManager.setup();
+            gameDbManager.overWriteSave(saveName);
+        } catch (SQLException SQLex) {
+            System.out.println("ERROR CONNECTING TO DATABASE");
+        }
+    }
+
     private void modalSaveWindow(Stage primaryStage) {
         final Stage dialog = new Stage();
         dialog.setTitle("Save Game");
@@ -146,8 +181,13 @@ public class Main extends Application {
 
         Button saveButton = new Button("SAVE");
         saveButton.setOnAction(event -> {
-            saveGame(textField.getText());
-            dialog.close();
+            if (checkIfNameExists(textField.getText())) {
+                saveOverWriteModal(primaryStage, textField.getText());
+            }
+            else {
+                saveGame(textField.getText());
+                dialog.close();
+            }
         });
         Button cancelSaveButton = new Button("CANCEL");
         cancelSaveButton.setOnAction(event -> dialog.close());
@@ -163,16 +203,24 @@ public class Main extends Application {
         dialog.show();
     }
 
-    private void saveGame(String saveName) {
+    private boolean checkIfNameExists(String saveName) {
         GameDatabaseManager gameDbManager = new GameDatabaseManager();
-
         try {
             gameDbManager.setup();
         } catch (SQLException SQLex) {
-            System.out.println("SQL ERROR");
+            System.out.println("ERROR CONNECTING TO DATABASE");
+        }
+        return gameDbManager.checkName(saveName);
+    }
+
+    private void saveGame(String saveName) {
+        GameDatabaseManager gameDbManager = new GameDatabaseManager();
+        try {
+            gameDbManager.setup();
+        } catch (SQLException SQLex) {
+            System.out.println("ERROR CONNECTING TO DATABASE");
         }
         gameDbManager.saveGameState(map.getMapName(), map.getPlayer(), saveName);
-
     }
 
     private void restart() {
