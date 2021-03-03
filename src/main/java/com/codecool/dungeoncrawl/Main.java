@@ -22,6 +22,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -151,12 +152,12 @@ public class Main extends Application {
         Button cancelSaveButton = new Button("CANCEL");
         cancelSaveButton.setOnAction(event -> dialog.close());
 
-        VBox dialogVbox = new VBox();
-        dialogVbox.getChildren().add(textField);
-        dialogVbox.getChildren().addAll(saveButton, cancelSaveButton);
-        dialogVbox.setAlignment(Pos.BOTTOM_CENTER);
+        HBox dialogHbox = new HBox();
+        dialogHbox.getChildren().add(textField);
+        dialogHbox.getChildren().addAll(saveButton, cancelSaveButton);
+        dialogHbox.setAlignment(Pos.BOTTOM_CENTER);
 
-        Scene dialogScene = new Scene(dialogVbox, 150, 75);
+        Scene dialogScene = new Scene(dialogHbox, 295, 25);
 
         dialog.setScene(dialogScene);
         dialog.show();
@@ -171,7 +172,7 @@ public class Main extends Application {
             System.out.println("SQL ERROR");
         }
         gameDbManager.savePlayer(map.getPlayer());
-        gameDbManager.saveGameState();
+        gameDbManager.saveGameState(map.getMapName(), map.getPlayer());
 
     }
 
