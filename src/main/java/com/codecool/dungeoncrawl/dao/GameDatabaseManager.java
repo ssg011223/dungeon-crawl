@@ -16,10 +16,13 @@ public class GameDatabaseManager {
     private GameStateDaoJdbc gameState;
 //    private GameMap currentMap;
 
-    private void overWriteSave(String currentMap, Player player, String saveName) {
+    public void overWriteSave(String currentMap, Player player, String saveName) {
+        PlayerModel model = new PlayerModel(player);
+        Date savedAt = new Date(Calendar.getInstance().getTime().getTime());
+        GameState currentGameState = new GameState(currentMap, savedAt, model, saveName);
+        playerDao.add(model);
+        gameState.overWriteExistingState(currentGameState, saveName);
 
-        gameState.overWriteExistingState(GameState, saveName);
-//        playerDao.overWriteExistingPlayer()
     }
 
     public boolean checkName(String name) {
