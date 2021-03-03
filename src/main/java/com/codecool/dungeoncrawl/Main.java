@@ -164,7 +164,7 @@ public class Main extends Application {
         GameDatabaseManager gameDbManager = new GameDatabaseManager();
         try {
             gameDbManager.setup();
-            gameDbManager.overWriteSave(saveName);
+            gameDbManager.overWriteSave(map.getMapName(), map.getPlayer(), saveName);
         } catch (SQLException SQLex) {
             System.out.println("ERROR CONNECTING TO DATABASE");
         }
