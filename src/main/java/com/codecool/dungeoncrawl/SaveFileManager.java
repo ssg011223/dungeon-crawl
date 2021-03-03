@@ -22,8 +22,8 @@ public class SaveFileManager {
         fileOut.close();
     }
 
-    public GameState importState() throws IOException, ClassNotFoundException {
-        FileInputStream fIn = new FileInputStream("testfile.json");
+    public GameState importState(String fileName) throws IOException, ClassNotFoundException {
+        FileInputStream fIn = new FileInputStream("saves/" + fileName);
         ObjectInputStream oIn = new ObjectInputStream(fIn);
         GameState state = (GameState) oIn.readObject();
         oIn.close();
