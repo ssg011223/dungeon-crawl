@@ -146,7 +146,7 @@ public class Main extends Application {
 
         Button saveButton = new Button("SAVE");
         saveButton.setOnAction(event -> {
-            saveGame();
+            saveGame(textField.getText());
             dialog.close();
         });
         Button cancelSaveButton = new Button("CANCEL");
@@ -163,7 +163,7 @@ public class Main extends Application {
         dialog.show();
     }
 
-    private void saveGame() {
+    private void saveGame(String saveName) {
         GameDatabaseManager gameDbManager = new GameDatabaseManager();
 
         try {
@@ -171,8 +171,7 @@ public class Main extends Application {
         } catch (SQLException SQLex) {
             System.out.println("SQL ERROR");
         }
-        gameDbManager.savePlayer(map.getPlayer());
-        gameDbManager.saveGameState(map.getMapName(), map.getPlayer());
+        gameDbManager.saveGameState(map.getMapName(), map.getPlayer(), saveName);
 
     }
 
@@ -251,28 +250,28 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
-            switch (keyEvent.getCode()) {
-                case UP:
-                    attackOrMove(0, -1);
-                    enemyAttackOrMove();
-                    refresh();
-                    break;
-                case DOWN:
-                    attackOrMove(0, 1);
-                    enemyAttackOrMove();
-                    refresh();
-                    break;
-                case LEFT:
-                    attackOrMove(-1, 0);
-                    enemyAttackOrMove();
-                    refresh();
-                    break;
-                case RIGHT:
-                    attackOrMove(1, 0);
-                    enemyAttackOrMove();
-                    refresh();
-                    break;
-            }
+        switch (keyEvent.getCode()) {
+            case UP:
+                attackOrMove(0, -1);
+                enemyAttackOrMove();
+                refresh();
+                break;
+            case DOWN:
+                attackOrMove(0, 1);
+                enemyAttackOrMove();
+                refresh();
+                break;
+            case LEFT:
+                attackOrMove(-1, 0);
+                enemyAttackOrMove();
+                refresh();
+                break;
+            case RIGHT:
+                attackOrMove(1, 0);
+                enemyAttackOrMove();
+                refresh();
+                break;
+        }
     }
 
     private int[] mapMover() {
