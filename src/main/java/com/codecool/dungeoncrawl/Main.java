@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.model.GameState;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,11 +25,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class Main extends Application {
     GameMap[] maps = new GameMap[] {MapLoader.loadMap("map.txt"), MapLoader.loadMap("map2.txt")};
     GameMap map = maps[0];
+    SaveFileManager saveFileManager = new SaveFileManager();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -85,7 +88,13 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
+        scene.setOnKeyPressed(event -> {
+            try {
+                onKeyPressed(event);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
@@ -192,7 +201,7 @@ public class Main extends Application {
         map.getPlayer().update();
     }
 
-    private void onKeyPressed(KeyEvent keyEvent) {
+    private void onKeyPressed(KeyEvent keyEvent) throws IOException, ClassNotFoundException {
             switch (keyEvent.getCode()) {
                 case UP:
                     attackOrMove(0, -1);
@@ -214,7 +223,49 @@ public class Main extends Application {
                     enemyAttackOrMove();
                     refresh();
                     break;
+                case S:
+                    saveFileManager.export(map, maps);
+                    break;
+                case L:
+                    savesFilesModal();
+                    break;
             }
+    }
+
+    private void loadImport(GameState gameState) {
+        maps = new GameMap[]{gameState.getDiscoveredMaps().get(0), gameState.getDiscoveredMaps().get(1)};
+        map = gameState.getCurrentMap();
+    }
+
+    private void savesFilesModal() {
+        final Stage dialog = new Stage();
+        List<String> saveFileNames = saveFileManager.getSaveFileNames();
+        dialog.setTitle("Saves");
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(gameStage);
+        VBox dialogVbox = new VBox();
+        if (saveFileNames == null) {
+            Text text = new Text("No saves found");
+            dialogVbox.getChildren().add(text);
+        } else {
+            for (String fileName: saveFileNames) {
+                Button button = new Button(fileName);
+                button.setOnAction(event -> {
+                    try {
+                        loadImport(saveFileManager.importState(fileName));
+                        dialog.close();
+                        refresh();
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+                dialogVbox.getChildren().add(button);
+            }
+        }
+        dialogVbox.setAlignment(Pos.CENTER);
+        Scene dialogScene = new Scene(dialogVbox, 500, 500);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
 
     private int[] mapMover() {
