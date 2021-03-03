@@ -6,10 +6,14 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 
 import java.io.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class SaveFileManager {
     public void export(GameMap currentMap, GameMap[] maps) throws IOException {
-        FileOutputStream fileOut = new FileOutputStream("testfile.json");
+        File saveFolder = new File("saves");
+        if (!saveFolder.exists()) saveFolder.mkdir();
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        FileOutputStream fileOut = new FileOutputStream("saves/" + ts.toString() + ".json");
         ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
         objectOut.writeObject(writeGameStateObject(currentMap, maps));
         objectOut.close();
@@ -22,7 +26,6 @@ public class SaveFileManager {
         GameState state = (GameState) oIn.readObject();
         oIn.close();
         fIn.close();
-        System.out.println(state);
         return state;
     }
 
