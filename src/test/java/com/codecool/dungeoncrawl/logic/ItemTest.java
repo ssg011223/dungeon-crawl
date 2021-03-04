@@ -62,12 +62,15 @@ class ItemTest {
 
     @Test
     void hasAttackModifier_ShowsModifier_ModifiesCorrectly() {
-        
-
+        assertTrue(sword.hasAttackModifier());
+        assertFalse(key.hasAttackModifier());
     }
 
     @Test
-    void isConsumable_ItemChecked_ReturnsCorrect() {}
-
+    void isConsumable_ItemChecked_ReturnsCorrect() {
+        key.setConsumable(true);
+        assertFalse(sword.isConsumable());
+        assertTrue(key.isConsumable());
+    }
 
 }
