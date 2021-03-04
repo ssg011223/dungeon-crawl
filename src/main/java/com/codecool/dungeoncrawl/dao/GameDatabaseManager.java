@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.List;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
@@ -54,6 +55,10 @@ public class GameDatabaseManager {
 
     public GameState getGameState(int i) {
         return gameState.get(i);
+    }
+
+    public List<GameState> getAllSaves() {
+        return gameState.getAll();
     }
 
     private DataSource connect() throws SQLException {
