@@ -256,5 +256,4 @@ class ActorTest {
 
         assertEquals(ghost.getCell().getTileName(), ghost.getTileName());
     }
-
 }

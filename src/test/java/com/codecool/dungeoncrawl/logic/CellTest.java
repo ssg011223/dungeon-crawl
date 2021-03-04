@@ -18,7 +18,7 @@ class CellTest {
     }
 
     @Test
-    void cellOnEdgeHasNoNeighbor() {
+    void getNeighbor_OffMappCoordinates_ReturnsNull() {
         Cell cell = map.getCell(1, 0);
         assertEquals(null, cell.getNeighbor(0, -1));
 
@@ -27,7 +27,7 @@ class CellTest {
     }
 
     @Test
-    void setItemPlacesItemsCorrectly() {
+    void setItem_ItemAddedToPlayer_ItemShowsUpInInventory() {
         Axe axe = new Axe(map.getCell(1, 1));
         Cell cell = map.getCell(1, 0);
         cell.setItem(axe);
@@ -36,22 +36,22 @@ class CellTest {
     }
 
     @Test
-    void createItemOffMapThrowsError() {
+    void ItemConstructor_PlacedOutOfBound_ThrowsError() {
         assertThrows(IndexOutOfBoundsException.class, () -> new Axe(map.getCell(1, -1)));
     }
 
     @Test
-    void createObstacleOffMapThrowsError() {
+    void ObstacleConstructor_PlacedOutOfBound_ThrowsError() {
         assertThrows(IndexOutOfBoundsException.class, () -> new Tree(map.getCell(1, -1)));
     }
 
     @Test
-    void cellOffMapThrowsError() {
+    void getCell_OffMapCoordinates_ThrowsError() {
         assertThrows(IndexOutOfBoundsException.class, () -> map.getCell(1, -1));
     }
 
     @Test
-    void obstacleSetCorrectlyReturnsObstacle() {
+    void setObstacle_ObstacleAddedToMap_MapShowsObstacle() {
         Tree tree = new Tree(map.getCell(1, 1));
         Cell cell = map.getCell(1, 0);
         cell.setObstacle(tree);
@@ -60,24 +60,24 @@ class CellTest {
     }
 
     @Test
-    void correctTileNameReturned() {
+    void getTileName_MapCoordinateSelected_TileNameOfCoordinateShownCorrectly() {
         assertEquals("floor", map.getCell(1,1).getTileName());
     }
 
     @Test
-    void correctTileTypeReturned() {
+    void getType_CellTypeCreated_CorrectCellTypeShown() {
         assertEquals(CellType.FLOOR, map.getCell(1,1).getType());
     }
 
     @Test
-    void correctXCoordinateReturned() {
+    void getX_CellCreated_CorrectCoordinateReturned() {
         Cell cell = map.getCell(1,0);
         int expectedX = 1;
         assertEquals(expectedX, cell.getX());
     }
 
     @Test
-    void correctYCoordinateReturned() {
+    void getY_CellCreated_CorrectCoordinateReturned() {
         Cell cell = map.getCell(0,1);
         int expectedY = 1;
         assertEquals(expectedY, cell.getY());
