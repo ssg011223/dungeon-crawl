@@ -1,8 +1,6 @@
 package com.codecool.dungeoncrawl.logic;
 
-import com.codecool.dungeoncrawl.logic.actors.Orc;
-import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
+import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +85,7 @@ class ActorTest {
             player.damage(skeleton.getAttack());
             player.update();
         }
+
         assertFalse(player.isAlive());
     }
 
@@ -106,10 +105,28 @@ class ActorTest {
 
         orc.move(1, 0);
 
-        int expectedX = 6;
-        int expectedY = 4;
+        assertEquals(6, orc.getX());
+        assertEquals(4, orc.getY());
+    }
 
-        assertEquals(expectedX, orc.getX());
-        assertEquals(expectedY, orc.getY());
+    @Test
+    void bossDoesNotMove() {
+        Boss boss = new Boss(gameMap.getCell(4, 4));
+        boss.move(1,0);
+
+        assertEquals(4, boss.getX());
+        assertEquals(4, boss.getY());
+    }
+
+    @Test
+    void ghostMovesThroughWalls() {
+        gameMap.getCell(2, 1).setType(CellType.WALL);
+
+        Ghost ghost = new Ghost(gameMap.getCell(1, 1));
+
+        ghost.move(1, 0);
+
+        assertEquals(2, ghost.getX());
+        assertEquals(1, ghost.getY());
     }
 }
