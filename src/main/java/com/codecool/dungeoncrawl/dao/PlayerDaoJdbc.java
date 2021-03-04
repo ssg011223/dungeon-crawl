@@ -26,9 +26,25 @@ public class PlayerDaoJdbc implements PlayerDao {
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
             player.setId(resultSet.getInt(1));
+            savePlayerInventory(player);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void savePlayerInventory(PlayerModel player) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "INSERT INTO player_inventory (player_id, inventory_items) VALUES (?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, player.getId());
+            statement.setString(2, player.getInventory());
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -45,4 +61,5 @@ public class PlayerDaoJdbc implements PlayerDao {
     public List<PlayerModel> getAll() {
         return null;
     }
+
 }

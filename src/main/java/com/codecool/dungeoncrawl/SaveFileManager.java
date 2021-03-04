@@ -34,7 +34,7 @@ public class SaveFileManager {
     private GameState writeGameStateObject(GameMap currentMap, GameMap[] maps) {
         Date date = new java.sql.Date(System.currentTimeMillis());
         PlayerModel player = new PlayerModel(currentMap.getPlayer());
-        GameState state = new GameState(currentMap, date, player);
+        GameState state = new GameState(currentMap, date, player, "0");
         state.addDiscoveredMap(maps[0]);
         state.addDiscoveredMap(maps[1]);
         return state;
