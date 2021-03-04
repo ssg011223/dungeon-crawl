@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -171,7 +172,7 @@ public class Main extends Application {
         GameDatabaseManager gameDbManager = new GameDatabaseManager();
         try {
             gameDbManager.setup();
-            gameDbManager.overWriteSave(map.getMapName(), map.getPlayer(), saveName);
+            gameDbManager.overWriteSave(map, maps, map.getPlayer(), saveName);
         } catch (SQLException SQLex) {
             System.out.println("ERROR CONNECTING TO DATABASE");
         }
@@ -227,7 +228,7 @@ public class Main extends Application {
         } catch (SQLException SQLex) {
             System.out.println("ERROR CONNECTING TO DATABASE");
         }
-        gameDbManager.saveGameState(map.getMapName(), map.getPlayer(), saveName);
+        gameDbManager.saveGameState(map, maps, map.getPlayer(), saveName);
     }
 
     private void restart() {
@@ -326,6 +327,17 @@ public class Main extends Application {
                 enemyAttackOrMove();
                 refresh();
                 break;
+//            case L: Temporary test load
+//                try {
+//                    GameDatabaseManager gdbm = new GameDatabaseManager();
+//                    gdbm.setup();
+//                    GameState test = gdbm.getGameState(1);
+//                    maps = test.getDiscoveredMaps().toArray(new GameMap[0]);
+//                    map = test.getCurrentMap();
+//                    refresh();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
         }
     }
 

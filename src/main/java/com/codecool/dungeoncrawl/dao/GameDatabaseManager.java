@@ -16,10 +16,12 @@ public class GameDatabaseManager {
     private GameStateDaoJdbc gameState;
 //    private GameMap currentMap;
 
-    public void overWriteSave(String currentMap, Player player, String saveName) {
+    public void overWriteSave(GameMap currentMap, GameMap[] allMaps, Player player, String saveName) {
         PlayerModel model = new PlayerModel(player);
         Date savedAt = new Date(Calendar.getInstance().getTime().getTime());
         GameState currentGameState = new GameState(currentMap, savedAt, model, saveName);
+        currentGameState.addDiscoveredMap(allMaps[0]);
+        currentGameState.addDiscoveredMap(allMaps[1]);
         playerDao.add(model);
         gameState.overWriteExistingState(currentGameState, saveName);
 
@@ -40,19 +42,25 @@ public class GameDatabaseManager {
         playerDao.add(model);
     }
 
-    public void saveGameState(String currentMap, Player player, String saveName) {
+    public void saveGameState(GameMap currentMap, GameMap[] allMaps, Player player, String saveName) {
         PlayerModel model = new PlayerModel(player);
         Date savedAt = new Date(Calendar.getInstance().getTime().getTime());
         GameState currentGameState = new GameState(currentMap, savedAt, model, saveName);
+        currentGameState.addDiscoveredMap(allMaps[0]);
+        currentGameState.addDiscoveredMap(allMaps[1]);
         playerDao.add(model);
         gameState.add(currentGameState);
     }
 
+    public GameState getGameState(int i) {
+        return gameState.get(i);
+    }
+
     private DataSource connect() throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        String dbName = System.getenv("PSQL_DB_NAME");
-        String user = System.getenv("PSQL_USER_NAME");
-        String password = System.getenv("PSQL_PASSWORD");
+        String dbName = "dungeon-crawl";
+        String user = "gergo";
+        String password = "ger448";
 
         dataSource.setDatabaseName(dbName);
         dataSource.setUser(user);
