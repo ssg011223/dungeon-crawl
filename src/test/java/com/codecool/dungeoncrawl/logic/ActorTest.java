@@ -129,4 +129,29 @@ class ActorTest {
         assertEquals(2, ghost.getX());
         assertEquals(1, ghost.getY());
     }
+
+    @Test
+    void krakenMovesOnlyOnWater() {
+        gameMap.getCell(2, 1).setType(CellType.WATER);
+        gameMap.getCell(3, 1).setType(CellType.WATER);
+
+        Kraken kraken = new Kraken(gameMap.getCell(2, 1));
+
+        kraken.move(-1, 0);                 // Floor below - Fail to move
+        assertEquals(2, kraken.getX());
+        assertEquals(1, kraken.getY());
+
+        kraken.move(0, 1);                  // Floor right - Fail to move
+        assertEquals(2, kraken.getX());
+        assertEquals(1, kraken.getY());
+
+        kraken.move(0, -1);                 // Floor left - Fail to move
+        assertEquals(2, kraken.getX());
+        assertEquals(1, kraken.getY());
+
+        kraken.move(1, 0);                  // Water above - Move success
+        assertEquals(3, kraken.getX());
+        assertEquals(1, kraken.getY());
+
+    }
 }
