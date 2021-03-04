@@ -64,7 +64,21 @@ public class GameStateDaoJdbc implements GameStateDao {
 
     @Override
     public List<GameState> getAll() {
-        return null;
+        List<GameState> res = new ArrayList<>(8);
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT state FROM game_state";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                byte[] st = (byte[]) rs.getObject(1);
+                ByteArrayInputStream baip = new ByteArrayInputStream(st);
+                ObjectInputStream ois = new ObjectInputStream(baip);
+                res.add((GameState) ois.readObject());
+            }
+        } catch (SQLException | IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return res.isEmpty() ? null : res;
     }
 
     public boolean findName(String name) {
