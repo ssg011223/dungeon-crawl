@@ -228,8 +228,33 @@ class ActorTest {
 
     @Test
     void Teleport_PlayerCanTeleport_WithoutError() {
+        GameMap gameMapSecond = new GameMap(5, 5, CellType.FLOOR);
+        Player player = new Player(gameMap.getCell(2,3));
 
+        player.teleport(gameMapSecond, 2, 2);
 
+        assertEquals(player.getCell(), gameMapSecond.getPlayer().getCell());
+    }
+
+    @Test
+    void getTileName_HealthReduced_LeavesBonesTiles() {
+        Orc orc = new Orc(gameMap.getCell(1,2));
+
+        orc.setHealth(0);
+        orc.update();
+
+        assertFalse(orc.isAlive());
+        assertEquals("bones", orc.getTileName());
+    }
+
+    @Test
+    void getTileName_GhostDies_TilesNameReturned() {
+        Ghost ghost = new Ghost(gameMap.getCell(1, 2));
+
+        ghost.setHealth(0);
+        ghost.update();
+
+        assertEquals(ghost.getCell().getTileName(), ghost.getTileName());
     }
 
 }
