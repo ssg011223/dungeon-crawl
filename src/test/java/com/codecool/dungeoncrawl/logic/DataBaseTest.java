@@ -32,5 +32,5 @@ public class DataBaseTest {
 
         assertTrue(gameDbManager.checkName("TestSave"));
     }
-    
+
 }
