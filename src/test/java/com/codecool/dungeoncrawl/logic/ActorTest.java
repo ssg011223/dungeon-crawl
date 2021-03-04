@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.items.Axe;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ class ActorTest {
     GameMap gameMap = new GameMap(7, 7, CellType.FLOOR);
 
     @Test
-    void moveUpdatesCells() {
+    void move_PlayerPlacedAndMoved_CellsUpdateToActorMove() {
         Player player = new Player(gameMap.getCell(1, 1));
         player.move(1, 0);
 
@@ -21,7 +22,7 @@ class ActorTest {
     }
 
     @Test
-    void cannotMoveIntoWall() {
+    void move_WallPlaced_CannotMoveThroughWall() {
         gameMap.getCell(2, 1).setType(CellType.WALL);
         Player player = new Player(gameMap.getCell(1, 1));
         player.move(1, 0);
@@ -31,7 +32,7 @@ class ActorTest {
     }
 
     @Test
-    void cannotMoveOutOfMap() {
+    void move_CommandedToMoveOffMap_CannotMove() {
         Player player = new Player(gameMap.getCell(6, 1));
         player.move(1, 0);
 
@@ -40,7 +41,7 @@ class ActorTest {
     }
 
     @Test
-    void cannotMoveIntoAnotherActor() {
+    void move_PathBlockedByEnemy_ActorCannotMoveThrough() {
         Player player = new Player(gameMap.getCell(1, 1));
         Skeleton skeleton = new Skeleton(gameMap.getCell(2, 1));
         player.move(1, 0);
@@ -53,7 +54,7 @@ class ActorTest {
     }
 
     @Test
-    void actorAtZeroHealthIsNotAlive() {
+    void isAlive_ActorHealthReduced_ActorIsNotAlive() {
         Player player = new Player(gameMap.getCell(1, 1));
         player.setHealth(0);
         player.update();
@@ -61,7 +62,7 @@ class ActorTest {
     }
 
     @Test
-    void actorTakesCorrectDamageWhenAttacked() {
+    void damage_ActorAttacked_ActorTakesCorrectDamage() {
         Player player = new Player(gameMap.getCell(1, 1));
         Skeleton skeleton = new Skeleton(gameMap.getCell(2, 1));
 
@@ -75,7 +76,7 @@ class ActorTest {
     }
 
     @Test
-    void actorDiesAfterMultipleAttacks() {
+    void isAlive_MultipleAttacksByEnemy_ActorIsNotAlive() {
         Player player = new Player(gameMap.getCell(1, 1));
         Skeleton skeleton = new Skeleton(gameMap.getCell(2, 1));
 
@@ -90,7 +91,7 @@ class ActorTest {
     }
 
     @Test
-    void swordDamageGreaterThanBaseDamage() {
+    void damage_WeaponAddedToPlayerInventory_DamageGreaterThanBefore() {
         Player player = new Player(gameMap.getCell(1, 1));
         int damageBeforeSword = player.getAttack();
         player.addToInventory(new Sword(gameMap.getCell(1, 1)));
@@ -100,7 +101,7 @@ class ActorTest {
     }
 
     @Test
-    void orcMovesUniquely() {
+    void move_MovesPassedToOrc_OrcMovesDouble() {
         Orc orc = new Orc(gameMap.getCell(4,4));
 
         orc.move(1, 0);
@@ -110,7 +111,7 @@ class ActorTest {
     }
 
     @Test
-    void bossDoesNotMove() {
+    void move_MovesPassedToBoss_BossDoesNotMove() {
         Boss boss = new Boss(gameMap.getCell(4, 4));
         boss.move(1,0);
 
@@ -119,7 +120,7 @@ class ActorTest {
     }
 
     @Test
-    void ghostMovesThroughWalls() {
+    void move_WallsPlacedInPath_GhostMovesThroughWalls() {
         gameMap.getCell(2, 1).setType(CellType.WALL);
 
         Ghost ghost = new Ghost(gameMap.getCell(1, 1));
@@ -131,7 +132,7 @@ class ActorTest {
     }
 
     @Test
-    void krakenMovesOnlyOnWater() {
+    void move_OnlyWaterTiles_KrakenMovesCorrectly() {
         gameMap.getCell(2, 1).setType(CellType.WATER);
         gameMap.getCell(3, 1).setType(CellType.WATER);
 
@@ -152,6 +153,83 @@ class ActorTest {
         kraken.move(1, 0);                  // Water above - Move success
         assertEquals(3, kraken.getX());
         assertEquals(1, kraken.getY());
+    }
+
+    @Test
+    void getTileName_ActorAlive_ReturnsCorrect() {
+        Skeleton skeleton = new Skeleton(gameMap.getCell(1, 1));
+
+        String livingSkeleton = skeleton.getTileName();
+        boolean skeletonAlive = skeleton.isAlive();
+
+        skeleton.setHealth(0);
+        skeleton.update();
+
+        String deadSkeleton = skeleton.getTileName();
+        boolean skeletonDead = skeleton.isAlive();
+
+        assertTrue(skeletonAlive);
+        assertEquals("skeleton", livingSkeleton);
+
+        assertFalse(skeletonDead);
+        assertEquals("bones", deadSkeleton);
+    }
+
+    @Test
+    void move_PlayerMovesOverDeadSkeleton_SkeletonAddedAsHiddenOccupant() {
+        Player player = new Player(gameMap.getCell(2,3));
+        Skeleton skeleton = new Skeleton(gameMap.getCell(3, 3));
+
+        skeleton.setHealth(0);
+        skeleton.update();
+
+        player.move(1, 0);
+
+        assertEquals(3, player.getX());
+        assertEquals(3, player.getY());
+        assertEquals(skeleton, player.getHiddenOccupant());
+    }
+
+    @Test
+    void getInventory_PickedUpObject_AppearsInInventory() {
+        Player player = new Player(gameMap.getCell(2,3));
+        Sword sword = new Sword(gameMap.getCell(3, 3));
+
+        player.move(1,0);
+        player.getCell().getItem().pickUp(player);
+
+        assertEquals(sword, player.getInventory().get(0));
+    }
+
+    @Test
+    void removeFromInventory_ItemToBeRemovedFromInventory_ItemRemoved() {
+        Player player = new Player(gameMap.getCell(2,3));
+        Sword sword = new Sword(gameMap.getCell(3, 3));
+        Axe axe = new Axe(gameMap.getCell(1,1));
+
+        player.addToInventory(sword);
+        player.addToInventory(axe);
+
+        assertEquals(2, player.getInventory().size());
+
+        player.removeFromInventory(sword);
+
+        assertEquals(axe, player.getInventory().get(0));
+    }
+
+    @Test
+    void setName_PlayerNameChange_NameChanged() {
+        Player player = new Player(gameMap.getCell(2,3));
+
+        player.setName("Player1");
+
+        assertEquals("Player1", player.getName());
+    }
+
+    @Test
+    void Teleport_PlayerCanTeleport_WithoutError() {
+
 
     }
+
 }
