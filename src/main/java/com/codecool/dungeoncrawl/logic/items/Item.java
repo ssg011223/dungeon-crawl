@@ -4,7 +4,9 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
-public abstract class Item implements Drawable {
+import java.io.Serializable;
+
+public abstract class Item implements Drawable, Serializable {
     private Cell cell;
     private boolean consumable = false;
     private boolean hasAttackModifier = false;

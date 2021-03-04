@@ -1,13 +1,12 @@
 package com.codecool.dungeoncrawl;
 
-import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.GameState;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,25 +15,23 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.sql.SQLException;
+import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class Main extends Application {
     GameMap[] maps = new GameMap[] {MapLoader.loadMap("map.txt"), MapLoader.loadMap("map2.txt")};
     GameMap map = maps[0];
+    SaveFileManager saveFileManager = new SaveFileManager();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -42,6 +39,7 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
     Label attackLabel = new Label();
+    Label tileLabel = new Label();
     Random RANDOM = new Random();
     Stage gameStage;
     String GameOver = "GAME OVER";
@@ -74,6 +72,7 @@ public class Main extends Application {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        ui.setVgap(2);
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
@@ -81,7 +80,19 @@ public class Main extends Application {
         ui.add(attackLabel, 1, 1);
         ui.add(new Label("Inventory: "), 0, 2);
         ui.add(inventoryLabel, 1, 2);
-        ui.add(saveButton(primaryStage), 0, 5);
+
+        Button exportBtn = new Button("Export");
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                saveFileManager.export(map, maps);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        Button importBtn = new Button("Import");
+        importBtn.setOnMouseClicked(event -> savesFilesModal());
+        ui.add(exportBtn, 0, 5);
+        ui.add(importBtn, 0, 6);
 
         BorderPane borderPane = new BorderPane();
 
@@ -91,11 +102,12 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressEvent -> {
-            if (keyPressEvent.isControlDown() && keyPressEvent.getCode() == KeyCode.S) {
-                modalSaveWindow(primaryStage);
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            try {
+                onKeyPressed(event);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            onKeyPressed(keyPressEvent);
         });
 
         primaryStage.setTitle("Dungeon Crawl");
@@ -103,13 +115,7 @@ public class Main extends Application {
         gameStage = primaryStage;
     }
 
-    private Button saveButton(Stage primaryStage) {
-        Button saveButton = new Button("Save");
-        saveButton.setOnAction(event -> modalSaveWindow(primaryStage));
-        return saveButton;
-    }
-
-    private void modalExitWindow(Stage primaryStage, String modalTitle, String modalText) {
+    private void modalWindow(Stage primaryStage, String modalTitle, String modalText) {
         final Stage dialog = new Stage();
         dialog.setTitle(modalTitle);
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -133,101 +139,6 @@ public class Main extends Application {
         Scene dialogScene = new Scene(dialogVbox, 150, 100);
         dialog.setScene(dialogScene);
         dialog.show();
-    }
-
-    private void saveOverWriteModal(Stage primaryStage, String saveName) {
-        final Stage dialog = new Stage();
-        dialog.setTitle("Save already exists!");
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(primaryStage);
-        dialog.setOnCloseRequest(event -> dialog.close());
-
-        Button saveButton = new Button("OVERWRITE");
-        saveButton.setOnAction(event -> {
-            overWriteSaveGame(saveName);
-            dialog.close();
-        });
-        Button cancelSaveButton = new Button("CANCEL");
-        cancelSaveButton.setOnAction(event -> dialog.close());
-
-        VBox dialogVbox = new VBox();
-        HBox dialogHbox = new HBox();
-        dialogVbox.getChildren().add(new Text("Would you like to overwrite the\n" +
-                "already existing state?\n"));
-
-        dialogHbox.getChildren().addAll(saveButton, cancelSaveButton);
-        dialogHbox.setAlignment(Pos.TOP_LEFT);
-
-        dialogVbox.getChildren().add(dialogHbox);
-        dialogVbox.setAlignment(Pos.TOP_LEFT);
-
-        Scene dialogScene = new Scene(dialogVbox, 220, 80);
-
-        dialog.setScene(dialogScene);
-        dialog.show();
-    }
-
-    private void overWriteSaveGame(String saveName) {
-        GameDatabaseManager gameDbManager = new GameDatabaseManager();
-        try {
-            gameDbManager.setup();
-            gameDbManager.overWriteSave(map.getMapName(), map.getPlayer(), saveName);
-        } catch (SQLException SQLex) {
-            System.out.println("ERROR CONNECTING TO DATABASE");
-        }
-    }
-
-    private void modalSaveWindow(Stage primaryStage) {
-        final Stage dialog = new Stage();
-        dialog.setTitle("Save Game");
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(primaryStage);
-        dialog.setOnCloseRequest(event -> dialog.close());
-
-        TextField textField = new TextField();
-
-        Button saveButton = new Button("SAVE");
-        saveButton.setOnAction(event -> {
-            if (checkIfNameExists(textField.getText())) {
-                saveOverWriteModal(primaryStage, textField.getText());
-            }
-            else {
-                saveGame(textField.getText());
-                dialog.close();
-            }
-        });
-        Button cancelSaveButton = new Button("CANCEL");
-        cancelSaveButton.setOnAction(event -> dialog.close());
-
-        HBox dialogHbox = new HBox();
-        dialogHbox.getChildren().add(textField);
-        dialogHbox.getChildren().addAll(saveButton, cancelSaveButton);
-        dialogHbox.setAlignment(Pos.BOTTOM_CENTER);
-
-        Scene dialogScene = new Scene(dialogHbox, 295, 25);
-
-        dialog.setScene(dialogScene);
-        dialog.show();
-    }
-
-    private boolean checkIfNameExists(String saveName) {
-        GameDatabaseManager gameDbManager = new GameDatabaseManager();
-        try {
-            gameDbManager.setup();
-        } catch (SQLException SQLex) {
-            System.out.println("ERROR CONNECTING TO DATABASE");
-        }
-        return gameDbManager.checkName(saveName);
-    }
-
-    private void saveGame(String saveName) {
-        GameDatabaseManager gameDbManager = new GameDatabaseManager();
-        try {
-            gameDbManager.setup();
-        } catch (SQLException SQLex) {
-            System.out.println("ERROR CONNECTING TO DATABASE");
-        }
-        gameDbManager.saveGameState(map.getMapName(), map.getPlayer(), saveName);
     }
 
     private void restart() {
@@ -304,29 +215,65 @@ public class Main extends Application {
         map.getPlayer().update();
     }
 
-    private void onKeyPressed(KeyEvent keyEvent) {
-        switch (keyEvent.getCode()) {
-            case UP:
-                attackOrMove(0, -1);
-                enemyAttackOrMove();
-                refresh();
-                break;
-            case DOWN:
-                attackOrMove(0, 1);
-                enemyAttackOrMove();
-                refresh();
-                break;
-            case LEFT:
-                attackOrMove(-1, 0);
-                enemyAttackOrMove();
-                refresh();
-                break;
-            case RIGHT:
-                attackOrMove(1, 0);
-                enemyAttackOrMove();
-                refresh();
-                break;
+    private void onKeyPressed(KeyEvent keyEvent) throws IOException, ClassNotFoundException {
+            switch (keyEvent.getCode()) {
+                case UP:
+                    attackOrMove(0, -1);
+                    enemyAttackOrMove();
+                    refresh();
+                    break;
+                case DOWN:
+                    attackOrMove(0, 1);
+                    enemyAttackOrMove();
+                    refresh();
+                    break;
+                case LEFT:
+                    attackOrMove(-1, 0);
+                    enemyAttackOrMove();
+                    refresh();
+                    break;
+                case RIGHT:
+                    attackOrMove(1, 0);
+                    enemyAttackOrMove();
+                    refresh();
+                    break;
+            }
+    }
+
+    private void loadImport(GameState gameState) {
+        maps = new GameMap[]{gameState.getDiscoveredMaps().get(0), gameState.getDiscoveredMaps().get(1)};
+        map = gameState.getCurrentMap();
+    }
+
+    private void savesFilesModal() {
+        final Stage dialog = new Stage();
+        List<String> saveFileNames = saveFileManager.getSaveFileNames();
+        dialog.setTitle("Saves");
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(gameStage);
+        VBox dialogVbox = new VBox();
+        if (saveFileNames == null) {
+            Text text = new Text("No saves found");
+            dialogVbox.getChildren().add(text);
+        } else {
+            for (String fileName: saveFileNames) {
+                Button button = new Button(fileName);
+                button.setOnAction(event -> {
+                    try {
+                        loadImport(saveFileManager.importState(fileName));
+                        dialog.close();
+                        refresh();
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+                dialogVbox.getChildren().add(button);
+            }
         }
+        dialogVbox.setAlignment(Pos.CENTER);
+        Scene dialogScene = new Scene(dialogVbox, 500, 500);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
 
     private int[] mapMover() {
@@ -391,10 +338,10 @@ public class Main extends Application {
         healthLabel.setText("" + map.getPlayer().getHealth());
         refreshInventory();
         if (!map.getPlayer().isAlive()) {
-            modalExitWindow(gameStage, GameOver, "");
+            modalWindow(gameStage, GameOver, "");
         }
         if (!maps[1].getBoss().isAlive()) {
-            modalExitWindow(gameStage, "YOU WON", "");
+            modalWindow(gameStage, "YOU WON", "");
         }
     }
 }
