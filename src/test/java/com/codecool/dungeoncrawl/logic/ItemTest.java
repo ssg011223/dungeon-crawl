@@ -37,8 +37,13 @@ class ItemTest {
     @Test
     void getCell_CellCoordinatesAdded_ItemCorrectlyReturned() {
         assertEquals(1, health.getCell().getX());
-        assertEquals(1, health.getCell().getY());
+        assertEquals(3, health.getCell().getY());
         assertEquals(health, gameMap.getCell(1, 3).getItem());
+    }
+
+    @Test
+    void getCell_OffMapCoordinates_ThrowsError() {
+        assertThrows(IndexOutOfBoundsException.class, () -> gameMap.getCell(-1, 0).getItem());
     }
 
 
@@ -46,10 +51,20 @@ class ItemTest {
     void modifyAttack_DamageAdded_ModifiesAttack() {
         Player player = new Player(gameMap.getCell(1, 2));
 
+        int damageBeforeSword = player.getAttack();
+
+        player.addToInventory(sword);
+
+        int damageWithSword = player.getAttack();
+
+        assertTrue(damageBeforeSword < damageWithSword);
     }
 
     @Test
-    void hasAttackModifier_ShowsModifier_ModifiesCorrectly() {}
+    void hasAttackModifier_ShowsModifier_ModifiesCorrectly() {
+        
+
+    }
 
     @Test
     void isConsumable_ItemChecked_ReturnsCorrect() {}
