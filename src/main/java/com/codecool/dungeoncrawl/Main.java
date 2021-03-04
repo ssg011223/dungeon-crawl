@@ -31,6 +31,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 
 public class Main extends Application {
@@ -83,6 +84,7 @@ public class Main extends Application {
         ui.add(new Label("Inventory: "), 0, 2);
         ui.add(inventoryLabel, 1, 2);
         ui.add(saveButton(primaryStage), 0, 5);
+        ui.add(loadButton(), 0, 6);
 
         BorderPane borderPane = new BorderPane();
 
@@ -108,6 +110,12 @@ public class Main extends Application {
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> modalSaveWindow(primaryStage));
         return saveButton;
+    }
+
+    private Button loadButton() {
+        Button loadButton = new Button("Load");
+        loadButton.setOnAction(event -> loadFromDBModal());
+        return loadButton;
     }
 
     private void modalExitWindow(Stage primaryStage, String modalTitle, String modalText) {
@@ -207,6 +215,34 @@ public class Main extends Application {
 
         Scene dialogScene = new Scene(dialogHbox, 295, 25);
 
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    private void loadFromDBModal() {
+        final Stage dialog = new Stage();
+        dialog.setTitle("Load Game");
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(gameStage);
+        VBox dialogVbox = new VBox();
+        GameDatabaseManager gameDBManager = new GameDatabaseManager();
+        try {
+            gameDBManager.setup();
+            List<GameState> dbSaves = gameDBManager.getAllSaves();
+            for (GameState gameState: dbSaves) {
+                Button button = new Button(gameState.getSaveName());
+                button.setOnAction(event -> {
+                    loadImport(gameState);
+                    refresh();
+                    dialog.close();
+                });
+                dialogVbox.getChildren().add(button);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dialogVbox.setAlignment(Pos.CENTER);
+        Scene dialogScene = new Scene(dialogVbox, 500, 500);
         dialog.setScene(dialogScene);
         dialog.show();
     }
@@ -339,6 +375,11 @@ public class Main extends Application {
 //                    e.printStackTrace();
 //                }
         }
+    }
+
+    private void loadImport(GameState gameState) {
+        maps = new GameMap[]{gameState.getDiscoveredMaps().get(0), gameState.getDiscoveredMaps().get(1)};
+        map = gameState.getCurrentMap();
     }
 
     private int[] mapMover() {
