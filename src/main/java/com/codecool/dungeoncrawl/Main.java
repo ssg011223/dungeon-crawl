@@ -88,8 +88,6 @@ public class Main extends Application {
         ui.add(attackLabel, 1, 1);
         ui.add(new Label("Inventory: "), 0, 2);
         ui.add(inventoryLabel, 1, 2);
-        ui.add(saveButton(primaryStage), 1, 5);
-        ui.add(loadButton(), 1, 6);
 
         Button exportBtn = new Button("Export");
         exportBtn.setOnMouseClicked(event -> {
@@ -115,12 +113,12 @@ public class Main extends Application {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressEvent -> {
             if (keyPressEvent.isControlDown() && keyPressEvent.getCode() == KeyCode.S) {
                 modalSaveWindow(primaryStage);
+            } else if (keyPressEvent.isControlDown() && keyPressEvent.getCode() == KeyCode.L) {
+                loadFromDBModal();
             }
             try {
                 onKeyPressed(keyPressEvent);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         });
@@ -128,18 +126,6 @@ public class Main extends Application {
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
         gameStage = primaryStage;
-    }
-
-    private Button saveButton(Stage primaryStage) {
-        Button saveButton = new Button("Save");
-        saveButton.setOnAction(event -> modalSaveWindow(primaryStage));
-        return saveButton;
-    }
-
-    private Button loadButton() {
-        Button loadButton = new Button("Load");
-        loadButton.setOnAction(event -> loadFromDBModal());
-        return loadButton;
     }
 
     private void modalExitWindow(Stage primaryStage, String modalTitle, String modalText) {
@@ -253,14 +239,19 @@ public class Main extends Application {
         try {
             gameDBManager.setup();
             List<GameState> dbSaves = gameDBManager.getAllSaves();
-            for (GameState gameState: dbSaves) {
-                Button button = new Button(gameState.getSaveName());
-                button.setOnAction(event -> {
-                    loadImport(gameState);
-                    refresh();
-                    dialog.close();
-                });
-                dialogVbox.getChildren().add(button);
+            if (dbSaves != null) {
+                for (GameState gameState : dbSaves) {
+                    Button button = new Button(gameState.getSaveName());
+                    button.setOnAction(event -> {
+                        loadImport(gameState);
+                        refresh();
+                        dialog.close();
+                    });
+                    dialogVbox.getChildren().add(button);
+                }
+            } else {
+                Text text = new Text("No saves found");
+                dialogVbox.getChildren().add(text);
             }
         } catch (SQLException e) {
             e.printStackTrace();
