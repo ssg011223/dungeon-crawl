@@ -239,14 +239,19 @@ public class Main extends Application {
         try {
             gameDBManager.setup();
             List<GameState> dbSaves = gameDBManager.getAllSaves();
-            for (GameState gameState: dbSaves) {
-                Button button = new Button(gameState.getSaveName());
-                button.setOnAction(event -> {
-                    loadImport(gameState);
-                    refresh();
-                    dialog.close();
-                });
-                dialogVbox.getChildren().add(button);
+            if (dbSaves != null) {
+                for (GameState gameState : dbSaves) {
+                    Button button = new Button(gameState.getSaveName());
+                    button.setOnAction(event -> {
+                        loadImport(gameState);
+                        refresh();
+                        dialog.close();
+                    });
+                    dialogVbox.getChildren().add(button);
+                }
+            } else {
+                Text text = new Text("No saves found");
+                dialogVbox.getChildren().add(text);
             }
         } catch (SQLException e) {
             e.printStackTrace();
