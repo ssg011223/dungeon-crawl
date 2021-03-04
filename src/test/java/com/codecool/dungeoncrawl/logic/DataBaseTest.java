@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataBaseTest {
@@ -31,17 +32,5 @@ public class DataBaseTest {
 
         assertTrue(gameDbManager.checkName("TestSave"));
     }
-
-    @Test
-    void overWriteSave_SaveNameIncorrect_ThrowsError() {
-        Player player = new Player(gameMap.getCell(1,1));
-        gameDbManager.saveGameState(gameMap, allMaps, player, "TestSave");
-
-        assertTrue(gameDbManager.checkName("TestSave"));
-
-        gameDbManager.overWriteSave(gameMap, allMaps, player, "TrialSaveWithDifferentName");
-
-        assertTrue(gameDbManager.checkName("TrialSaveWithDifferentName"));
-    }
-
+    
 }
